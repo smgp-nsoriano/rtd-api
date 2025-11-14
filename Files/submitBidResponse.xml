@@ -1,0 +1,7 @@
+--uuid:1337fc5f-3ca9-4fb5-8c2b-9ef58be81330
+Content-Type: application/xop+xml; charset=UTF-8; type="text/xml";
+Content-Transfer-Encoding: binary
+Content-ID: <root.message@cxf.apache.org>
+
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Header></SOAP-ENV:Header><SOAP-ENV:Body><Status xmlns=""><Message>Failed: 1SUAL_G01 for 0 : User Is Not authorized To Submit Bids For Resource 1SUAL_G01</Message></Status></SOAP-ENV:Body></SOAP-ENV:Envelope>
+--uuid:1337fc5f-3ca9-4fb5-8c2b-9ef58be81330--

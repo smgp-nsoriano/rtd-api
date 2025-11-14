@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="MarketMapModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="m_EmailRecipient">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="200" />
+    <Property Name="EmailAddress" Type="varchar" MaxLength="200" />
+    <Property Name="IsActive" Type="bit" />
+  </EntityType>
+  <EntityType Name="m_FileforProcessing">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FTPFileID" Type="int" />
+    <Property Name="FIleName" Type="varchar" MaxLength="200" />
+    <Property Name="IsProcessed" Type="bit" />
+    <Property Name="ProcessedDate" Type="datetime" />
+    <Property Name="IsActive" Type="bit" />
+    <Property Name="CreationDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="m_FTPConfiguration">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Username" Type="varchar" MaxLength="200" Nullable="false" />
+    <Property Name="Password" Type="varchar" MaxLength="200" Nullable="false" />
+    <Property Name="IPAddress" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="UFLRootPath" Type="varchar(max)" Nullable="false" />
+    <Property Name="LocalRootPath" Type="varchar(max)" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="m_FTPFiles">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FTPConfigID" Type="int" />
+    <Property Name="FilePath" Type="varchar" MaxLength="200" />
+    <Property Name="UploadFilePath" Type="varchar(max)" />
+    <Property Name="FilePrefix" Type="varchar" MaxLength="100" />
+    <Property Name="FileFormat" Type="varchar" MaxLength="100" />
+    <Property Name="FileSuffix" Type="varchar" MaxLength="100" />
+    <Property Name="ExtensionName" Type="varchar" MaxLength="50" />
+    <Property Name="SheetName" Type="varchar" MaxLength="100" />
+    <Property Name="FileperDay" Type="int" />
+    <Property Name="UFLPath" Type="varchar(max)" />
+    <Property Name="DownloadPath" Type="varchar(max)" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="m_FTPFileSheetName">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FTPFileID" Type="int" />
+    <Property Name="SheetName" Type="varchar" MaxLength="200" />
+    <Property Name="FunctionName" Type="varchar" MaxLength="200" />
+    <Property Name="IsActive" Type="bit" />
+  </EntityType>
+  <EntityType Name="m_ServiceFTPFileSetup">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ServiceID" Type="int" />
+    <Property Name="FileID" Type="int" />
+    <Property Name="ReadAt" Type="datetime" />
+    <Property Name="FunctionName" Type="varchar" MaxLength="200" />
+    <Property Name="IsActive" Type="bit" />
+  </EntityType>
+  <EntityType Name="m_Services">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ServiceName" Type="varchar" MaxLength="200" />
+    <Property Name="Interval" Type="int" />
+    <Property Name="IsActive" Type="bit" />
+  </EntityType>
+  <EntityType Name="t_Logs">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ServiceID" Type="int" />
+    <Property Name="Service" Type="varchar" MaxLength="200" />
+    <Property Name="FileID" Type="int" />
+    <Property Name="FileName" Type="varchar" MaxLength="200" />
+    <Property Name="SheetName" Type="varchar" MaxLength="200" />
+    <Property Name="Type" Type="varchar" MaxLength="200" />
+    <Property Name="Message" Type="varchar(max)" />
+    <Property Name="LoggedDate" Type="datetime" />
+    <Property Name="IsEmailed" Type="bit" />
+    <Property Name="EmailedDate" Type="datetime" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'MarketMap.dbo.vwServiceFTPFileSetup' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="vwServiceFTPFileSetup">
+    <Key>
+      <PropertyRef Name="ID" />
+      <PropertyRef Name="FTPServer" />
+      <PropertyRef Name="FileAddress" />
+      <PropertyRef Name="UploadFilePath" />
+      <PropertyRef Name="Username" />
+      <PropertyRef Name="Password" />
+      <PropertyRef Name="UFLPath" />
+      <PropertyRef Name="DownloadPath" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="ServiceID" Type="int" />
+    <Property Name="ServiceName" Type="varchar" MaxLength="200" />
+    <Property Name="Interval" Type="int" />
+    <Property Name="FTPServer" Type="varchar" MaxLength="57" Nullable="false" />
+    <Property Name="FileAddress" Type="varchar" MaxLength="256" Nullable="false" />
+    <Property Name="UploadFilePath" Type="varchar(max)" Nullable="false" />
+    <Property Name="Username" Type="varchar" MaxLength="200" Nullable="false" />
+    <Property Name="Password" Type="varchar" MaxLength="200" Nullable="false" />
+    <Property Name="FileID" Type="int" />
+    <Property Name="ExtensionName" Type="varchar" MaxLength="50" />
+    <Property Name="FunctionName" Type="varchar" MaxLength="200" />
+    <Property Name="UFLPath" Type="varchar(max)" Nullable="false" />
+    <Property Name="DownloadPath" Type="varchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityContainer Name="MarketMapModelStoreContainer">
+    <EntitySet Name="m_EmailRecipient" EntityType="Self.m_EmailRecipient" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="m_FileforProcessing" EntityType="Self.m_FileforProcessing" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="m_FTPConfiguration" EntityType="Self.m_FTPConfiguration" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="m_FTPFiles" EntityType="Self.m_FTPFiles" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="m_FTPFileSheetName" EntityType="Self.m_FTPFileSheetName" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="m_ServiceFTPFileSetup" EntityType="Self.m_ServiceFTPFileSetup" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="m_Services" EntityType="Self.m_Services" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="t_Logs" EntityType="Self.t_Logs" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="vwServiceFTPFileSetup" EntityType="Self.vwServiceFTPFileSetup" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [vwServiceFTPFileSetup].[ID] AS [ID], 
+    [vwServiceFTPFileSetup].[ServiceID] AS [ServiceID], 
+    [vwServiceFTPFileSetup].[ServiceName] AS [ServiceName], 
+    [vwServiceFTPFileSetup].[Interval] AS [Interval], 
+    [vwServiceFTPFileSetup].[FTPServer] AS [FTPServer], 
+    [vwServiceFTPFileSetup].[FileAddress] AS [FileAddress], 
+    [vwServiceFTPFileSetup].[UploadFilePath] AS [UploadFilePath], 
+    [vwServiceFTPFileSetup].[Username] AS [Username], 
+    [vwServiceFTPFileSetup].[Password] AS [Password], 
+    [vwServiceFTPFileSetup].[FileID] AS [FileID], 
+    [vwServiceFTPFileSetup].[ExtensionName] AS [ExtensionName], 
+    [vwServiceFTPFileSetup].[FunctionName] AS [FunctionName], 
+    [vwServiceFTPFileSetup].[UFLPath] AS [UFLPath], 
+    [vwServiceFTPFileSetup].[DownloadPath] AS [DownloadPath]
+    FROM [dbo].[vwServiceFTPFileSetup] AS [vwServiceFTPFileSetup]</DefiningQuery>
+    </EntitySet>
+  </EntityContainer>
+</Schema>

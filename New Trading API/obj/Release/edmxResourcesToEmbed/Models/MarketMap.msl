@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="MarketMapModelStoreContainer" CdmEntityContainer="CAMSEntities">
+    <EntitySetMapping Name="m_EmailRecipient">
+      <EntityTypeMapping TypeName="MarketMapModel.m_EmailRecipient">
+        <MappingFragment StoreEntitySet="m_EmailRecipient">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="EmailAddress" ColumnName="EmailAddress" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="m_FileforProcessing">
+      <EntityTypeMapping TypeName="MarketMapModel.m_FileforProcessing">
+        <MappingFragment StoreEntitySet="m_FileforProcessing">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="FTPFileID" ColumnName="FTPFileID" />
+          <ScalarProperty Name="FIleName" ColumnName="FIleName" />
+          <ScalarProperty Name="IsProcessed" ColumnName="IsProcessed" />
+          <ScalarProperty Name="ProcessedDate" ColumnName="ProcessedDate" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="m_FTPConfiguration">
+      <EntityTypeMapping TypeName="MarketMapModel.m_FTPConfiguration">
+        <MappingFragment StoreEntitySet="m_FTPConfiguration">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Username" ColumnName="Username" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="IPAddress" ColumnName="IPAddress" />
+          <ScalarProperty Name="UFLRootPath" ColumnName="UFLRootPath" />
+          <ScalarProperty Name="LocalRootPath" ColumnName="LocalRootPath" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="m_FTPFiles">
+      <EntityTypeMapping TypeName="MarketMapModel.m_FTPFiles">
+        <MappingFragment StoreEntitySet="m_FTPFiles">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="FTPConfigID" ColumnName="FTPConfigID" />
+          <ScalarProperty Name="FilePath" ColumnName="FilePath" />
+          <ScalarProperty Name="UploadFilePath" ColumnName="UploadFilePath" />
+          <ScalarProperty Name="FilePrefix" ColumnName="FilePrefix" />
+          <ScalarProperty Name="FileFormat" ColumnName="FileFormat" />
+          <ScalarProperty Name="FileSuffix" ColumnName="FileSuffix" />
+          <ScalarProperty Name="ExtensionName" ColumnName="ExtensionName" />
+          <ScalarProperty Name="SheetName" ColumnName="SheetName" />
+          <ScalarProperty Name="FileperDay" ColumnName="FileperDay" />
+          <ScalarProperty Name="UFLPath" ColumnName="UFLPath" />
+          <ScalarProperty Name="DownloadPath" ColumnName="DownloadPath" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="m_FTPFileSheetName">
+      <EntityTypeMapping TypeName="MarketMapModel.m_FTPFileSheetName">
+        <MappingFragment StoreEntitySet="m_FTPFileSheetName">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="FTPFileID" ColumnName="FTPFileID" />
+          <ScalarProperty Name="SheetName" ColumnName="SheetName" />
+          <ScalarProperty Name="FunctionName" ColumnName="FunctionName" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="m_ServiceFTPFileSetup">
+      <EntityTypeMapping TypeName="MarketMapModel.m_ServiceFTPFileSetup">
+        <MappingFragment StoreEntitySet="m_ServiceFTPFileSetup">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="ServiceID" ColumnName="ServiceID" />
+          <ScalarProperty Name="FileID" ColumnName="FileID" />
+          <ScalarProperty Name="ReadAt" ColumnName="ReadAt" />
+          <ScalarProperty Name="FunctionName" ColumnName="FunctionName" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="m_Services">
+      <EntityTypeMapping TypeName="MarketMapModel.m_Services">
+        <MappingFragment StoreEntitySet="m_Services">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="ServiceName" ColumnName="ServiceName" />
+          <ScalarProperty Name="Interval" ColumnName="Interval" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="t_Logs">
+      <EntityTypeMapping TypeName="MarketMapModel.t_Logs">
+        <MappingFragment StoreEntitySet="t_Logs">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="ServiceID" ColumnName="ServiceID" />
+          <ScalarProperty Name="Service" ColumnName="Service" />
+          <ScalarProperty Name="FileID" ColumnName="FileID" />
+          <ScalarProperty Name="FileName" ColumnName="FileName" />
+          <ScalarProperty Name="SheetName" ColumnName="SheetName" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="Message" ColumnName="Message" />
+          <ScalarProperty Name="LoggedDate" ColumnName="LoggedDate" />
+          <ScalarProperty Name="IsEmailed" ColumnName="IsEmailed" />
+          <ScalarProperty Name="EmailedDate" ColumnName="EmailedDate" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="vwServiceFTPFileSetups">
+      <EntityTypeMapping TypeName="MarketMapModel.vwServiceFTPFileSetup">
+        <MappingFragment StoreEntitySet="vwServiceFTPFileSetup">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="ServiceID" ColumnName="ServiceID" />
+          <ScalarProperty Name="ServiceName" ColumnName="ServiceName" />
+          <ScalarProperty Name="Interval" ColumnName="Interval" />
+          <ScalarProperty Name="FTPServer" ColumnName="FTPServer" />
+          <ScalarProperty Name="FileAddress" ColumnName="FileAddress" />
+          <ScalarProperty Name="UploadFilePath" ColumnName="UploadFilePath" />
+          <ScalarProperty Name="Username" ColumnName="Username" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="FileID" ColumnName="FileID" />
+          <ScalarProperty Name="ExtensionName" ColumnName="ExtensionName" />
+          <ScalarProperty Name="FunctionName" ColumnName="FunctionName" />
+          <ScalarProperty Name="UFLPath" ColumnName="UFLPath" />
+          <ScalarProperty Name="DownloadPath" ColumnName="DownloadPath" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

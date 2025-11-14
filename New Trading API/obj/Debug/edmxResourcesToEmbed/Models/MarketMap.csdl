@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="MarketMapModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="m_EmailRecipient">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="EmailAddress" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="m_FileforProcessing">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FTPFileID" Type="Int32" />
+    <Property Name="FIleName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="IsProcessed" Type="Boolean" />
+    <Property Name="ProcessedDate" Type="DateTime" Precision="3" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="CreationDate" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="m_FTPConfiguration">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Username" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Password" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="IPAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="UFLRootPath" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="LocalRootPath" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+  </EntityType>
+  <EntityType Name="m_FTPFiles">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FTPConfigID" Type="Int32" />
+    <Property Name="FilePath" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="UploadFilePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="FilePrefix" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="FileFormat" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="FileSuffix" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="ExtensionName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="SheetName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="FileperDay" Type="Int32" />
+    <Property Name="UFLPath" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="DownloadPath" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+  </EntityType>
+  <EntityType Name="m_FTPFileSheetName">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FTPFileID" Type="Int32" />
+    <Property Name="SheetName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="FunctionName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="m_ServiceFTPFileSetup">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ServiceID" Type="Int32" />
+    <Property Name="FileID" Type="Int32" />
+    <Property Name="ReadAt" Type="DateTime" Precision="3" />
+    <Property Name="FunctionName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="m_Services">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ServiceName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="Interval" Type="Int32" />
+    <Property Name="IsActive" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="t_Logs">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ServiceID" Type="Int32" />
+    <Property Name="Service" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="FileID" Type="Int32" />
+    <Property Name="FileName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="SheetName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="Type" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="LoggedDate" Type="DateTime" Precision="3" />
+    <Property Name="IsEmailed" Type="Boolean" />
+    <Property Name="EmailedDate" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="vwServiceFTPFileSetup">
+    <Key>
+      <PropertyRef Name="ID" />
+      <PropertyRef Name="FTPServer" />
+      <PropertyRef Name="FileAddress" />
+      <PropertyRef Name="UploadFilePath" />
+      <PropertyRef Name="Username" />
+      <PropertyRef Name="Password" />
+      <PropertyRef Name="UFLPath" />
+      <PropertyRef Name="DownloadPath" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="ServiceID" Type="Int32" />
+    <Property Name="ServiceName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="Interval" Type="Int32" />
+    <Property Name="FTPServer" Type="String" MaxLength="57" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="FileAddress" Type="String" MaxLength="256" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="UploadFilePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Username" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Password" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="FileID" Type="Int32" />
+    <Property Name="ExtensionName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="FunctionName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="UFLPath" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="DownloadPath" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+  </EntityType>
+  <EntityContainer Name="CAMSEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="m_EmailRecipient" EntityType="Self.m_EmailRecipient" />
+    <EntitySet Name="m_FileforProcessing" EntityType="Self.m_FileforProcessing" />
+    <EntitySet Name="m_FTPConfiguration" EntityType="Self.m_FTPConfiguration" />
+    <EntitySet Name="m_FTPFiles" EntityType="Self.m_FTPFiles" />
+    <EntitySet Name="m_FTPFileSheetName" EntityType="Self.m_FTPFileSheetName" />
+    <EntitySet Name="m_ServiceFTPFileSetup" EntityType="Self.m_ServiceFTPFileSetup" />
+    <EntitySet Name="m_Services" EntityType="Self.m_Services" />
+    <EntitySet Name="t_Logs" EntityType="Self.t_Logs" />
+    <EntitySet Name="vwServiceFTPFileSetups" EntityType="Self.vwServiceFTPFileSetup" />
+  </EntityContainer>
+</Schema>
