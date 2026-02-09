@@ -10,6 +10,7 @@ namespace New_Trading_API.Models
         public string Tagname { get; set; }
         public Nullable<double> Schedule { get; set; }
         public Nullable<double> Price { get; set; }
+        public Nullable<double> OfferPrice { get; set; }
         public Nullable<double> MrktReqt { get; set; }
         public Nullable<double> Actual { get; set; }
         public DateTime Timestamp { get; set; }
@@ -30,6 +31,8 @@ namespace New_Trading_API.Models
         public Nullable<double> Price_RU { get; set; }
         public Nullable<double> Price_RD { get; set; }
         public Nullable<double> Price_CR { get; set; }
+        public Nullable<double> OfferPrice_RU { get; set; }
+        public Nullable<double> OfferPrice_RD { get; set; }
         public string Remarks { get; set; }
         public DateTime Timestamp { get; set; }
         public string Interval { get; set; }

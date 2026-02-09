@@ -1,74 +1,18 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Developments\\smc-rtd-dashboard-api\\",
+  "WorkspaceRootPath": "C:\\Users\\Calibr8\\Documents\\Projects\\LNGPH\\rtd-api\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|c:\\developments\\smc-rtd-dashboard-api\\new trading api\\controllers\\marketdatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|C:\\Users\\Calibr8\\Documents\\Projects\\LNGPH\\rtd-api\\new trading api\\controllers\\marketdatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|solutionrelative:new trading api\\controllers\\marketdatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|C:\\Developments\\smc-rtd-dashboard-api\\new trading api\\controllers\\reservemarketcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|solutionrelative:new trading api\\controllers\\reservemarketcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|c:\\users\\calibr8\\documents\\projects\\lngph\\rtd-api\\new trading api\\services\\ireserverepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|solutionrelative:new trading api\\services\\ireserverepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|C:\\Developments\\smc-rtd-dashboard-api\\new trading api\\startup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|solutionrelative:new trading api\\startup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|C:\\Developments\\smc-rtd-dashboard-api\\new trading api\\controllers\\websettingcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|solutionrelative:new trading api\\controllers\\websettingcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|C:\\Developments\\smc-rtd-dashboard-api\\new trading api\\controllers\\tradingcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|solutionrelative:new trading api\\controllers\\tradingcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|C:\\Developments\\smc-rtd-dashboard-api\\new trading api\\controllers\\usermanagementcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|solutionrelative:new trading api\\controllers\\usermanagementcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|C:\\Developments\\smc-rtd-dashboard-api\\new trading api\\globalfunctions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|solutionrelative:new trading api\\globalfunctions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|C:\\Developments\\smc-rtd-dashboard-api\\new trading api\\controllers\\accountpermissioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|solutionrelative:new trading api\\controllers\\accountpermissioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|C:\\Developments\\smc-rtd-dashboard-api\\new trading api\\controllers\\mobilecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|solutionrelative:new trading api\\controllers\\mobilecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|C:\\Developments\\smc-rtd-dashboard-api\\new trading api\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|solutionrelative:new trading api\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|C:\\Developments\\smc-rtd-dashboard-api\\new trading api\\app_start\\webapiconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|solutionrelative:new trading api\\app_start\\webapiconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|C:\\Developments\\smc-rtd-dashboard-api\\new trading api\\app_start\\bundleconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|solutionrelative:new trading api\\app_start\\bundleconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|C:\\Developments\\smc-rtd-dashboard-api\\new trading api\\app_start\\filterconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|solutionrelative:new trading api\\app_start\\filterconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|C:\\Developments\\smc-rtd-dashboard-api\\new trading api\\app_start\\identityconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|solutionrelative:new trading api\\app_start\\identityconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|C:\\Developments\\smc-rtd-dashboard-api\\new trading api\\app_start\\routeconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|solutionrelative:new trading api\\app_start\\routeconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|C:\\Developments\\smc-rtd-dashboard-api\\new trading api\\app_start\\startup.auth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|solutionrelative:new trading api\\app_start\\startup.auth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\Models\\LogDto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:New Trading API\\Models\\LogDto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|C:\\Users\\Calibr8\\Documents\\Projects\\LNGPH\\rtd-api\\new trading api\\models\\reservemarket.cs||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|solutionrelative:new trading api\\models\\reservemarket.cs||{8B382828-6202-11D1-8870-0000F87579D2}"
     }
   ],
   "DocumentGroupContainers": [
@@ -78,212 +22,49 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 2,
           "Children": [
             {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ReserveMarketController.cs",
-              "DocumentMoniker": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\Controllers\\ReserveMarketController.cs",
-              "RelativeDocumentMoniker": "New Trading API\\Controllers\\ReserveMarketController.cs",
-              "ToolTip": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\Controllers\\ReserveMarketController.cs",
-              "RelativeToolTip": "New Trading API\\Controllers\\ReserveMarketController.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAAAD4AAAAuAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-10T06:26:28.465Z"
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "LogDto.cs",
-              "DocumentMoniker": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\Models\\LogDto.cs",
-              "RelativeDocumentMoniker": "New Trading API\\Models\\LogDto.cs",
-              "ToolTip": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\Models\\LogDto.cs",
-              "RelativeToolTip": "New Trading API\\Models\\LogDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAXAAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "ReserveMarket.cs",
+              "DocumentMoniker": "C:\\Users\\Calibr8\\Documents\\Projects\\LNGPH\\rtd-api\\New Trading API\\Models\\ReserveMarket.cs",
+              "RelativeDocumentMoniker": "New Trading API\\Models\\ReserveMarket.cs",
+              "ToolTip": "C:\\Users\\Calibr8\\Documents\\Projects\\LNGPH\\rtd-api\\New Trading API\\Models\\ReserveMarket.cs",
+              "RelativeToolTip": "New Trading API\\Models\\ReserveMarket.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-01T07:59:48.83Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "WebSettingController.cs",
-              "DocumentMoniker": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\Controllers\\WebSettingController.cs",
-              "RelativeDocumentMoniker": "New Trading API\\Controllers\\WebSettingController.cs",
-              "ToolTip": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\Controllers\\WebSettingController.cs",
-              "RelativeToolTip": "New Trading API\\Controllers\\WebSettingController.cs",
-              "ViewState": "AgIAAAIAAAAAAAAAAAAiwF0AAAAIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-01T07:57:16.166Z"
+              "WhenOpened": "2026-01-13T05:52:57.324Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "MarketDataController.cs",
-              "DocumentMoniker": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\Controllers\\MarketDataController.cs",
+              "DocumentMoniker": "C:\\Users\\Calibr8\\Documents\\Projects\\LNGPH\\rtd-api\\New Trading API\\Controllers\\MarketDataController.cs",
               "RelativeDocumentMoniker": "New Trading API\\Controllers\\MarketDataController.cs",
-              "ToolTip": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\Controllers\\MarketDataController.cs",
+              "ToolTip": "C:\\Users\\Calibr8\\Documents\\Projects\\LNGPH\\rtd-api\\New Trading API\\Controllers\\MarketDataController.cs",
               "RelativeToolTip": "New Trading API\\Controllers\\MarketDataController.cs",
-              "ViewState": "AgIAAC0QAAAAAAAAAAAqwEoQAAAAAAAAAAAAAA==",
+              "ViewState": "AQIAAGQIAAAAAAAAAAAnwJEIAABCAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-31T01:32:39.419Z",
+              "WhenOpened": "2026-01-08T03:51:33.115Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "GlobalFunctions.cs",
-              "DocumentMoniker": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\GlobalFunctions.cs",
-              "RelativeDocumentMoniker": "New Trading API\\GlobalFunctions.cs",
-              "ToolTip": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\GlobalFunctions.cs",
-              "RelativeToolTip": "New Trading API\\GlobalFunctions.cs",
-              "ViewState": "AgIAAG0AAAAAAAAAAAAgwHUAAAAfAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "IReserveRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Calibr8\\Documents\\Projects\\LNGPH\\rtd-api\\New Trading API\\Services\\IReserveRepository.cs",
+              "RelativeDocumentMoniker": "New Trading API\\Services\\IReserveRepository.cs",
+              "ToolTip": "C:\\Users\\Calibr8\\Documents\\Projects\\LNGPH\\rtd-api\\New Trading API\\Services\\IReserveRepository.cs",
+              "RelativeToolTip": "New Trading API\\Services\\IReserveRepository.cs",
+              "ViewState": "AQIAAC8DAAAAAAAAAAAuwEoDAACGAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-31T01:32:09.017Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "UserManagementController.cs",
-              "DocumentMoniker": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\Controllers\\UserManagementController.cs",
-              "RelativeDocumentMoniker": "New Trading API\\Controllers\\UserManagementController.cs",
-              "ToolTip": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\Controllers\\UserManagementController.cs",
-              "RelativeToolTip": "New Trading API\\Controllers\\UserManagementController.cs",
-              "ViewState": "AgIAAOUAAAAAAAAAAAAuwBYBAAARAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-05T02:07:36.624Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "MobileController.cs",
-              "DocumentMoniker": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\Controllers\\MobileController.cs",
-              "RelativeDocumentMoniker": "New Trading API\\Controllers\\MobileController.cs",
-              "ToolTip": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\Controllers\\MobileController.cs",
-              "RelativeToolTip": "New Trading API\\Controllers\\MobileController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACAAAAARAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-04T02:34:00.833Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Startup.cs",
-              "DocumentMoniker": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\Startup.cs",
-              "RelativeDocumentMoniker": "New Trading API\\Startup.cs",
-              "ToolTip": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\Startup.cs",
-              "RelativeToolTip": "New Trading API\\Startup.cs",
-              "ViewState": "AgIAAAIAAAAAAAAAAAAqwAsAAAAZAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-23T09:23:36.921Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "AccountPermissionController.cs",
-              "DocumentMoniker": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\Controllers\\AccountPermissionController.cs",
-              "RelativeDocumentMoniker": "New Trading API\\Controllers\\AccountPermissionController.cs",
-              "ToolTip": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\Controllers\\AccountPermissionController.cs",
-              "RelativeToolTip": "New Trading API\\Controllers\\AccountPermissionController.cs",
-              "ViewState": "AgIAAF8AAAAAAAAAAAAuwG8AAAASAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-27T03:53:51.982Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "AccountController.cs",
-              "DocumentMoniker": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\Controllers\\AccountController.cs",
-              "RelativeDocumentMoniker": "New Trading API\\Controllers\\AccountController.cs",
-              "ToolTip": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\Controllers\\AccountController.cs",
-              "RelativeToolTip": "New Trading API\\Controllers\\AccountController.cs",
-              "ViewState": "AgIAAJMAAAAAAAAAAAAIwA8AAAAdAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-27T03:53:44.521Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "TradingController.cs",
-              "DocumentMoniker": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\Controllers\\TradingController.cs",
-              "RelativeDocumentMoniker": "New Trading API\\Controllers\\TradingController.cs",
-              "ToolTip": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\Controllers\\TradingController.cs",
-              "RelativeToolTip": "New Trading API\\Controllers\\TradingController.cs",
-              "ViewState": "AgIAALYHAAAAAAAAAAAqwLYHAAApAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-23T09:31:14.125Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "BundleConfig.cs",
-              "DocumentMoniker": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\App_Start\\BundleConfig.cs",
-              "RelativeDocumentMoniker": "New Trading API\\App_Start\\BundleConfig.cs",
-              "ToolTip": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\App_Start\\BundleConfig.cs",
-              "RelativeToolTip": "New Trading API\\App_Start\\BundleConfig.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAA8AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-23T09:30:04.075Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "FilterConfig.cs",
-              "DocumentMoniker": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\App_Start\\FilterConfig.cs",
-              "RelativeDocumentMoniker": "New Trading API\\App_Start\\FilterConfig.cs",
-              "ToolTip": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\App_Start\\FilterConfig.cs",
-              "RelativeToolTip": "New Trading API\\App_Start\\FilterConfig.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-23T09:29:57.309Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "IdentityConfig.cs",
-              "DocumentMoniker": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\App_Start\\IdentityConfig.cs",
-              "RelativeDocumentMoniker": "New Trading API\\App_Start\\IdentityConfig.cs",
-              "ToolTip": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\App_Start\\IdentityConfig.cs",
-              "RelativeToolTip": "New Trading API\\App_Start\\IdentityConfig.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAA0AAABIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-23T09:29:52.239Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "RouteConfig.cs",
-              "DocumentMoniker": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\App_Start\\RouteConfig.cs",
-              "RelativeDocumentMoniker": "New Trading API\\App_Start\\RouteConfig.cs",
-              "ToolTip": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\App_Start\\RouteConfig.cs",
-              "RelativeToolTip": "New Trading API\\App_Start\\RouteConfig.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAA9AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-23T09:29:49.092Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "Startup.Auth.cs",
-              "DocumentMoniker": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\App_Start\\Startup.Auth.cs",
-              "RelativeDocumentMoniker": "New Trading API\\App_Start\\Startup.Auth.cs",
-              "ToolTip": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\App_Start\\Startup.Auth.cs",
-              "RelativeToolTip": "New Trading API\\App_Start\\Startup.Auth.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAAAA8AAAAgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-23T09:29:33.115Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "WebApiConfig.cs",
-              "DocumentMoniker": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\App_Start\\WebApiConfig.cs",
-              "RelativeDocumentMoniker": "New Trading API\\App_Start\\WebApiConfig.cs",
-              "ToolTip": "C:\\Developments\\smc-rtd-dashboard-api\\New Trading API\\App_Start\\WebApiConfig.cs",
-              "RelativeToolTip": "New Trading API\\App_Start\\WebApiConfig.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-23T09:29:21.372Z"
+              "WhenOpened": "2025-12-19T16:37:01.275Z",
+              "EditorCaption": ""
             }
           ]
         }
