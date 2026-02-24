@@ -1,10 +1,12 @@
 ﻿using New_Trading_API.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Web.Http;
 
 namespace New_Trading_API.Controllers
@@ -138,6 +140,8 @@ namespace New_Trading_API.Controllers
         [Route("AccountPermission/SavePermission/{accountType}/{createdby}/{isOperator}")]
         public IHttpActionResult SavePermission(string accountType, string createdby, Boolean isOperator)
         {
+            try
+            {
                 using (var db = new TradingEntities())
                 {
                     var tblaccounttype = new a_UserAccountType()
@@ -149,7 +153,7 @@ namespace New_Trading_API.Controllers
                     };
                     db.a_UserAccountType.Add(tblaccounttype);
                     db.SaveChanges();
-                
+
                     var tblpermission = new a_Permission()
                     {
                         UserAccountTypeID = tblaccounttype.AccountTypeID,
@@ -159,13 +163,28 @@ namespace New_Trading_API.Controllers
                         IsShowUserConfig = false,
                         IsManualEntry = false,
                         IsActive = true,
-                        IsOperator = isOperator,                        
+                        IsOperator = isOperator,
                     };
                     db.a_Permission.Add(tblpermission);
                     db.SaveChanges();
-
-                return Content(HttpStatusCode.OK, tblpermission.PermissionID);
-                }   
+                    
+                    GlobalFunctions.Log(logType: "CREATE_ACCOUNT_PERMISSION",
+                            action: "Create Account Permission Success",
+                            message: "Account Permission created successfully.",
+                            newValues: JsonConvert.SerializeObject(tblaccounttype),
+                            userName: GetUsername());
+                    return Content(HttpStatusCode.OK, tblpermission.PermissionID);
+                }
+            }
+            catch (Exception ex) {
+                GlobalFunctions.Log(logType: "CHANGED_USER_PASSWORD",
+                            action: "Change User Password Error",
+                            message: ex.Message,
+                            
+                            userName: GetUsername());
+                return Content(HttpStatusCode.InternalServerError, ex.Message);
+            }
+                 
         }
 
         [HttpPost]
@@ -258,6 +277,12 @@ namespace New_Trading_API.Controllers
             var modifiedBy = new SqlParameter("@modifiedBy", model.modifiedby);
             GlobalFunctions.DataReader(str, accountType, id, modifiedBy);
 
+            GlobalFunctions.Log(logType: "UPDATE_ACCOUNT_TYPE",
+                            action: "Update Account Type Success",
+                            message: "Account Type updated successfully.",
+                            newValues: JsonConvert.SerializeObject(model),
+                            userName: GetUsername());
+
             return Ok();
         }
 
@@ -272,6 +297,11 @@ namespace New_Trading_API.Controllers
             var accounttypeid = new SqlParameter("@id", accountTypeId);
             GlobalFunctions.DataReader(str, accounttypeid);
 
+            GlobalFunctions.Log(logType: "DELETE_ACCOUNT_TYPE",
+                            action: "Delete Account Type Success",
+                            message: "Account Type deleted successfully.",
+                            newValues: $"AccountTypeId: {accountTypeId}",
+                            userName: GetUsername());
             return Ok();
         }
 
@@ -280,6 +310,12 @@ namespace New_Trading_API.Controllers
         public HttpResponseMessage EnPassword(string password)
         {
             return Request.CreateResponse(HttpStatusCode.OK, GlobalFunctions.Encrypt(password));
+        }
+
+        private string GetUsername()
+        {
+            var identity = (ClaimsIdentity)User.Identity;
+            return identity.FindFirst("UserName").Value;
         }
     }
 }

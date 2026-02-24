@@ -69,15 +69,31 @@ namespace New_Trading_API.Models
             {
                 if (GlobalFunctions.Decrypt(dt.Rows[0]["Password"].ToString()) == context.Password)
                 {
+                    GlobalFunctions.Log(logType: "LOGIN",
+                           action: "Login Success",
+                           message: "User successfully logged in.",
+                           userName: context.UserName);
+
                     identity.AddClaim(new Claim("UserName", dt.Rows[0]["UserName"].ToString()));
                     identity.AddClaim(new Claim("AccountType", dt.Rows[0]["AccountType"].ToString()));
                     identity.AddClaim(new Claim("UserID", dt.Rows[0]["UserID"].ToString()));
                     context.Validated(identity);
                 }
-
+                else
+                {
+                    GlobalFunctions.Log(logType: "LOGIN",
+                         action: "Login Failed",
+                         message: "The user name or password is incorrect.",
+                         userName: context.UserName);
+                }
             }
             else
             {
+                GlobalFunctions.Log(logType: "LOGIN",
+                         action: "Login Failed",
+                         message: "The user name or password is incorrect.",
+                         userName: context.UserName);
+
                 context.SetError("Invalid Username", "Invalid Username");
                 context.Rejected();
             }

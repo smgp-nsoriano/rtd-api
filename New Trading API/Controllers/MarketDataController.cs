@@ -28,6 +28,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web.Configuration;
 using New_Trading_API.Constant;
+using System.Security.Claims;
 
 namespace New_Trading_API.Controllers
 {
@@ -2010,7 +2011,6 @@ namespace New_Trading_API.Controllers
             List<Bid> bidList = new List<Bid>();
             bidList = ReadExcel(@"c:\BIDS\BidOffer" + UnitID.ToString() + ".xlsx", UnitNumber);
             bidList = SaveOffers(bidList, UnitNumber);
-
             return Request.CreateResponse(HttpStatusCode.OK, bidList);
         }
 
@@ -2189,6 +2189,20 @@ namespace New_Trading_API.Controllers
                                   ,UploadedBy = '{offer.UploadedBy}'
                                 where UnitNumber = '{bid.UnitNumber}' and DateSchedule = convert(date,'{offer.Date}')";
                     db.Database.ExecuteSqlCommand(query);
+
+                    GlobalFunctions.Log(logType: "CREATE_BID",
+                            action: "Create Bid Success",
+                            message: $"Bid successfully created.UnitNumber: {bid.UnitNumber}, Schedule:{offer.Date}, TransID: {message.Substring(9, 7)},UploadedBy:{offer.UploadedBy}, DateTimeSubmitted: {DateTime.Now} ",
+                            newValues: JsonConvert.SerializeObject(bidList),
+                            userName: GetUsername());
+                }
+                else
+                {
+                    GlobalFunctions.Log(logType: "CREATE_BID",
+                            action: "Create Bid Failed",
+                            message: $"Bid failed to create. UnitNumber: {bid.UnitNumber}, Schedule:{offer.Date} ",
+                            newValues: message,
+                            userName: GetUsername());
                 }
 
                 offerList = GetOffers(bid.UnitNumber, offer.Date);
@@ -2235,6 +2249,13 @@ namespace New_Trading_API.Controllers
                     message = CreateOfferXML(bidList, webServiceSetting.TpUser.ToString(), HttpContext.Current.Server.MapPath(@"~\Files\XML Offer\BidOffer" + bid.UnitID + ".xml"), bid.UnitNumber);
                 }
             }
+
+            GlobalFunctions.Log(logType: "CREATE_BID_XML",
+                            action: "Create Bid XML Success",
+                            message: $"Bid xml successfully created. UnitNumber: {bid.UnitNumber}, Schedule:{offer.Date} ",
+                            newValues: message,
+                            userName: GetUsername());
+
             return Content(HttpStatusCode.OK, "success");
         }
 
@@ -2330,6 +2351,11 @@ namespace New_Trading_API.Controllers
                 db.Database.ExecuteSqlCommand(query);
                 rrStandard = SingleRRStandard(standard.UnitNumber);
             }
+            GlobalFunctions.Log(logType: "SET_RR_STANDARD",
+                           action: "Set RR Standard Success",
+                           message: $"RR Standard updated successfully",
+                           newValues: JsonConvert.SerializeObject(standard),
+                           userName: GetUsername());
             return Content(HttpStatusCode.OK, rrStandard);
         }
 
@@ -2342,6 +2368,12 @@ namespace New_Trading_API.Controllers
                 string query = $@"select top 1 RRUp,RRDown,RRMax,PMax from m_Unit where UnitNumber = '{UnitNumber}' and IsActive = 1";
                 rrStandard = db.Database.SqlQuery<RRStandard>(query).FirstOrDefault();
             }
+
+            GlobalFunctions.Log(logType: "GET_RR_STANDARD",
+                           action: "Get RR Standard Success",
+                           message: $"RR Standard retrieved successfully",
+                           newValues: $"UnitNumber: {UnitNumber}",
+                           userName: GetUsername());
             return rrStandard;
         }
 
@@ -2559,7 +2591,13 @@ namespace New_Trading_API.Controllers
 
                 offers = GetOffers(UnitNumber, dateSched);
             }
-            
+
+            GlobalFunctions.Log(logType: "UPDATE_BID_OFFER",
+                            action: "Update Bid Offer Success",
+                            message: $"Bid offer successfully updated. UnitNumber: {UnitNumber}, Schedule:{dateSched} ",
+                            newValues: JsonConvert.SerializeObject(bids),
+                            userName: GetUsername());
+
             return offers;
         }
 
@@ -2685,6 +2723,11 @@ namespace New_Trading_API.Controllers
                 }
             }
 
+            GlobalFunctions.Log(logType: "GET_BID_OFFER",
+                           action: "Bid Offer Retrieved Success",
+                           message: "Bid Offer retrieved successfully",
+                           newValues: $"Date: {dt.ToShortDateString()}",
+                           userName: GetUsername());
             return offers;
         }
 
@@ -7303,6 +7346,12 @@ namespace New_Trading_API.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, tagValue);
         }
         #endregion
+
+        private string GetUsername()
+        {
+            var identity = (ClaimsIdentity)User.Identity;
+            return identity.FindFirst("UserName").Value;
+        }
     }
 
     public class InMemoryMultipartFormDataStreamProvider : MultipartStreamProvider
