@@ -127,9 +127,9 @@ namespace New_Trading_API
                 // Create a request to the Uir assigned.
                 ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
                 ServicePointManager.Expect100Continue = true;
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3;
+                //ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3;
                 //ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
-                //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uriSAF);
                 request.Headers.Add("SOAPAction", operation);
                 request.ContentType = "text/xml;charset=\"utf-8\"";
@@ -1474,6 +1474,29 @@ namespace New_Trading_API
             return result;
         }
 
+        public static void ExecuteNonQuery(string query, params SqlParameter[] parameters)
+        {
+            using (var db = new TradingEntities())
+            {
+                var conn = db.Database.Connection;
+                var cmd = conn.CreateCommand();
+                cmd.CommandText = query;
+                cmd.CommandType = CommandType.Text;
+
+                if (parameters != null)
+                {
+                    foreach (var p in parameters)
+                    {
+                        cmd.Parameters.Add(p);
+                    }
+                }
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                conn.Close();
+            }
+        }
+
         public static DataTable DataReader(string query, params SqlParameter[] parameter)
         {
 
@@ -1504,6 +1527,89 @@ namespace New_Trading_API
                 return dt;
             }
 
+        }
+
+        public static void Log(
+        string logType,
+        string action,
+        string tableName = null,
+        string recordId = null,
+        string oldValues = null,
+        string newValues = null,
+        string message = null,
+        string userName = null)
+        {
+            try
+            {
+                var query = @"
+                INSERT INTO SystemLogs
+                (
+                    LogType,
+                    Action,
+                    TableName,
+                    RecordId,
+                    OldValues,
+                    NewValues,
+                    Message,
+                    UserName,
+                    IPAddress,
+                    Endpoint,
+                    LogDate
+                )
+                VALUES
+                (
+                    @LogType,
+                    @Action,
+                    @TableName,
+                    @RecordId,
+                    @OldValues,
+                    @NewValues,
+                    @Message,
+                    @UserName,
+                    @IPAddress,
+                    @Endpoint,
+                    @LogDate
+                )";
+
+                ExecuteNonQuery(query,
+                    new SqlParameter("@LogType", (object)logType ?? DBNull.Value),
+                    new SqlParameter("@Action", (object)action ?? DBNull.Value),
+                    new SqlParameter("@TableName", (object)tableName ?? DBNull.Value),
+                    new SqlParameter("@RecordId", (object)recordId ?? DBNull.Value),
+                    new SqlParameter("@OldValues", (object)oldValues ?? DBNull.Value),
+                    new SqlParameter("@NewValues", (object)newValues ?? DBNull.Value),
+                    new SqlParameter("@Message", (object)message ?? DBNull.Value),
+                    new SqlParameter("@UserName", (object)userName ?? DBNull.Value),
+                    new SqlParameter("@IPAddress", (object)GetIpAddress() ?? DBNull.Value),
+                    new SqlParameter("@Endpoint", (object)GetEndpoint() ?? DBNull.Value),
+                    new SqlParameter("@LogDate", DateTime.Now)
+                );
+            }
+            catch
+            {
+                // IMPORTANT:
+                // Never allow logging failure to crash your API
+            }
+        }
+
+        private static string GetCurrentUser()
+        {
+            var context = HttpContext.Current;
+
+            if (context?.User?.Identity?.IsAuthenticated == true)
+                return context.User.Identity.Name;
+
+            return "Anonymous";
+        }
+
+        private static string GetIpAddress()
+        {
+            return HttpContext.Current?.Request?.UserHostAddress;
+        }
+
+        private static string GetEndpoint()
+        {
+            return HttpContext.Current?.Request?.RawUrl;
         }
     }
 }

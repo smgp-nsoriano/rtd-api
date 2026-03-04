@@ -1,10 +1,13 @@
 ﻿using New_Trading_API.Models;
+using NPOI.POIFS.Crypt.Dsig;
+using NPOI.SS.Formula.Functions;
 using OSIsoft.AF.Asset;
 using OSIsoft.AF.Data;
 using OSIsoft.AF.PI;
 using OSIsoft.AF.Time;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Linq;
 
 namespace New_Trading_API.Services
@@ -25,7 +28,9 @@ namespace New_Trading_API.Services
         const string FR = "FR";
         const string DR = "DR";
         const string RD = "RD";
+        const string RDP = "RD Price";
         const string RU = "RU";
+        const string RUP = "RU Price";
         const string ENP = "EN Price";
         const string RMP = "RM Price";
         const int aheadProjMinuteSpan = 20;
@@ -87,7 +92,6 @@ namespace New_Trading_API.Services
             else
             {
                 aheadMin = 10;
-
             }
 
             // HAP Data
@@ -108,10 +112,16 @@ namespace New_Trading_API.Services
                 else
                 {
                     var val = GetPIValue(ptHap, minMod, x, false);
+
+                    string shortDateString = now.AddMinutes(x + minMod).ToShortDateString();
+                    int interv = now.AddMinutes(x + minMod).Minute == 0 ? now.AddMinutes(x + minMod).Hour : now.AddMinutes(x + minMod).Hour + 1;
+                    Nullable<Double> offer_price = GetSpecificBidOfferPrice(shortDateString, interv, unitNumber, commodity, val);
+
                     reserveSchedules.Add(new ReserveSchedule
                     {
                         Tagname = hapTagname,
                         Schedule = val,
+                        OfferPrice = offer_price,
                         Timestamp = Convert.ToDateTime(now.AddMinutes(x + minMod).ToShortDateString() + " " + now.AddMinutes(x + minMod).ToString("HH:mm:00")),
                         Interval = now.AddMinutes(x + minMod).ToString("HH:mm")
                     });
@@ -121,10 +131,16 @@ namespace New_Trading_API.Services
             if (aheadMin == 10)
             {
                 var val = Convert.ToDouble(ptRTDValue10.Value);
+
+                string shortDateString = now.AddMinutes(5 + minMod).ToShortDateString();
+                int interv = now.AddMinutes(5 + minMod).Minute == 0 ? now.AddMinutes(5 + minMod).Hour : now.AddMinutes(5 + minMod).Hour + 1;
+                Nullable<Double> offer_price = GetSpecificBidOfferPrice(shortDateString, interv, unitNumber, commodity, val);
+
                 reserveSchedules.Add(new ReserveSchedule
                 {
                     Tagname = rtdTagname,
                     Schedule = val,
+                    OfferPrice = offer_price,
                     Timestamp = Convert.ToDateTime(DateTime.Now.AddMinutes(5 + minMod).ToShortDateString() + " " + DateTime.Now.AddMinutes(5 + minMod).ToString("HH:mm:00")),
                     Interval = DateTime.Now.AddMinutes(5 + minMod).ToString("HH:mm")
                 });
@@ -160,10 +176,15 @@ namespace New_Trading_API.Services
                     }
                 }
 
+                string shortDateString = now.AddMinutes(minMod).ToShortDateString();
+                int interv = now.AddMinutes(minMod).Minute == 0 ? now.AddMinutes(minMod).Hour : now.AddMinutes(minMod).Hour + 1;
+                Nullable<Double> offer_price = GetSpecificBidOfferPrice(shortDateString, interv, unitNumber, commodity, val);
+
                 reserveSchedules.Add(new ReserveSchedule
                 {
                     Tagname = rtdTagname,
                     Schedule = val,
+                    OfferPrice = offer_price,
                     Timestamp = Convert.ToDateTime(now.AddMinutes(minMod).ToShortDateString() + " " + now.AddMinutes(minMod).ToString("HH:mm:00")),
                     Interval = now.AddMinutes(minMod).ToString("HH:mm"),
                     DataStatus = dataStatus
@@ -190,11 +211,17 @@ namespace New_Trading_API.Services
                 {
                     var val = GetPIValue(ptRtd, minMod, x, true);
                     var actual = GetPIValue(ptActual, minMod, x, true);
+
+                    string shortDateString = now.AddMinutes(-(minMod + x)).ToShortDateString();
+                    int interv = now.AddMinutes(-(minMod + x)).Minute == 0 ? now.AddMinutes(-(minMod + x)).Hour : now.AddMinutes(-(minMod + x)).Hour + 1;
+                    Nullable<Double> offer_price = GetSpecificBidOfferPrice(shortDateString, interv, unitNumber, commodity, val);
+
                     reserveSchedules.Add(new ReserveSchedule
                     {
                         Tagname = rtdTagname,
                         Schedule = val,
                         Actual = actual,
+                        OfferPrice = offer_price,
                         Timestamp = Convert.ToDateTime(now.AddMinutes(-(minMod + x)).ToShortDateString() + " " + now.AddMinutes(-(minMod + x)).ToString("HH:mm:00")),
                         Interval = now.AddMinutes(-(minMod + x)).ToString("HH:mm")
                     });
@@ -203,6 +230,267 @@ namespace New_Trading_API.Services
 
             return reserveSchedules;
         }
+
+        public Nullable<Double> GetSpecificBidOfferPrice(string shortDateString, int interv, string unitNumber, string commodity, Nullable<Double> val)
+        {
+            Nullable<Double> offer_price = null;
+            string query = "";
+            var data = new OfferDB();
+
+            if (commodity.ToLower() == RU.ToLower())
+            {
+                using (TradingEntities db = new TradingEntities())
+                {
+                    query = $"select * from [Trading].[dbo].[t_BidOffer] where DateSchedule = '{shortDateString}' and Interval = {interv} and UnitNumber = '{unitNumber}'";
+                    data = db.Database.SqlQuery<OfferDB>(query).FirstOrDefault<OfferDB>();
+
+                    if (data != null)
+                    {
+                        if (val <= data.AS_RU_P1)
+                        {
+                            offer_price = data.AS_RU_Q1;
+                        }
+                        else if (val > data.AS_RU_P1 && val <= data.AS_RU_P2)
+                        {
+                            offer_price = data.AS_RU_Q2;
+                        }
+                        else if (val > data.AS_RU_P2 && val <= data.AS_RU_P3)
+                        {
+                            offer_price = data.AS_RU_Q3;
+                        }
+                        else if (val > data.AS_RU_P3 && val <= data.AS_RU_P4)
+                        {
+                            offer_price = data.AS_RU_Q4;
+                        }
+                        else if (val > data.AS_RU_P4 && val <= data.AS_RU_P5)
+                        {
+                            offer_price = data.AS_RU_Q5;
+                        }
+                        else
+                        {
+                            offer_price = null;
+                        }
+                    }
+                }
+            }
+            if (commodity.ToLower() == RD.ToLower())
+            {
+                using (TradingEntities db = new TradingEntities())
+                {
+                    query = $"select * from [Trading].[dbo].[t_BidOffer] where DateSchedule = '{shortDateString}' and Interval = {interv} and UnitNumber = '{unitNumber}'";
+                    data = db.Database.SqlQuery<OfferDB>(query).FirstOrDefault<OfferDB>();
+
+                    if (data != null)
+                    {
+                        if (val <= data.AS_RD_P1)
+                        {
+                            offer_price = data.AS_RD_Q1;
+                        }
+                        else if (val > data.AS_RD_P1 && val <= data.AS_RD_P2)
+                        {
+                            offer_price = data.AS_RD_Q2;
+                        }
+                        else if (val > data.AS_RD_P2 && val <= data.AS_RD_P3)
+                        {
+                            offer_price = data.AS_RD_Q3;
+                        }
+                        else if (val > data.AS_RD_P3 && val <= data.AS_RD_P4)
+                        {
+                            offer_price = data.AS_RD_Q4;
+                        }
+                        else if (val > data.AS_RD_P4 && val <= data.AS_RD_P5)
+                        {
+                            offer_price = data.AS_RD_Q5;
+                        }
+                        else
+                        {
+                            offer_price = null;
+                        }
+                    }
+                }
+            }
+
+            return offer_price;
+        }
+
+        public List<ReserveSchedule> GetReserveOfferPrice(string unitNumber, string commodity)
+        {
+            List<ReserveSchedule> reserveSchedules = new List<ReserveSchedule>();
+            
+            var now = DateTime.Now;
+            var shortDateString = now.ToShortDateString();
+            //var interval = now.Hour + 1;
+
+            int minMod = 5 - ((now.Minute) % 5);
+            int aheadMin = 5;
+
+            Nullable<Double> val = null;
+            Nullable<Double>[] prices;
+
+            using (TradingEntities db = new TradingEntities())
+            {
+                string query = "";
+                var data = new OfferDB();
+
+                // HAP Data
+                for (int x = aheadProjMinuteSpan; x >= 5; x = x - 5)
+                {
+                    query = $"select * from t_BidOffer where DateSchedule = '{shortDateString}' and Interval = {now.AddMinutes(x + minMod).Hour + 1} and UnitNumber = '{unitNumber}'";
+                    data = db.Database.SqlQuery<OfferDB>(query).FirstOrDefault<OfferDB>();
+
+                    if (data == null) {
+                        reserveSchedules.Add(new ReserveSchedule
+                        {
+                            Tagname = "from_SQL",
+                            Schedule = null,
+                            Timestamp = Convert.ToDateTime(now.AddMinutes(x + minMod).ToShortDateString() + " " + now.AddMinutes(x + minMod).ToString("HH:mm:00")),
+                            Interval = now.AddMinutes(x + minMod).ToString("HH:mm")
+                        });
+                    }
+                    else
+                    {
+                        switch (commodity)
+                        {
+                            case "RU":
+                                prices = new Nullable<Double>[] { data.AS_RU_Q5, data.AS_RU_Q4, data.AS_RU_Q3, data.AS_RU_Q2, data.AS_RU_Q1 };
+                                foreach (Nullable<Double> i in prices)
+                                {
+                                    if (i.HasValue)
+                                    {
+                                        val = i.Value; break;
+                                    }
+                                }
+                                break;
+                            case "RD":
+                                prices = new Nullable<Double>[] { data.AS_RD_Q5, data.AS_RD_Q4, data.AS_RD_Q3, data.AS_RD_Q2, data.AS_RD_Q1 };
+                                foreach (Nullable<Double> i in prices)
+                                {
+                                    if (i.HasValue)
+                                    {
+                                        val = i.Value; break;
+                                    }
+                                }
+                                break;
+                        }
+                        reserveSchedules.Add(new ReserveSchedule
+                        {
+                            Tagname = "from_SQL",
+                            Schedule = val,
+                            Timestamp = Convert.ToDateTime(now.AddMinutes(x + minMod).ToShortDateString() + " " + now.AddMinutes(x + minMod).ToString("HH:mm:00")),
+                            Interval = now.AddMinutes(x + minMod).ToString("HH:mm")
+                        });
+                    }
+                }
+
+                // RTD
+                query = $"select * from t_BidOffer where DateSchedule = '{shortDateString}' and Interval = {now.AddMinutes(minMod).Hour + 1} and UnitNumber = '{unitNumber}'";
+                data = db.Database.SqlQuery<OfferDB>(query).FirstOrDefault<OfferDB>();
+
+                if (data == null)
+                {
+                    reserveSchedules.Add(new ReserveSchedule
+                    {
+                        Tagname = "from_SQL",
+                        Schedule = null,
+                        Timestamp = Convert.ToDateTime(now.AddMinutes(minMod).ToShortDateString() + " " + now.AddMinutes(minMod).ToString("HH:mm:00")),
+                        Interval = now.AddMinutes(minMod).ToString("HH:mm")
+                        // ,DataStatus = dataStatus
+                    });
+                }
+                else
+                {
+                    switch (commodity)
+                    {
+                        case "RU":
+                            prices = new Nullable<Double>[] { data.AS_RU_Q5, data.AS_RU_Q4, data.AS_RU_Q3, data.AS_RU_Q2, data.AS_RU_Q1 };
+                            foreach (Nullable<Double> i in prices)
+                            {
+                                if (i.HasValue)
+                                {
+                                    val = i.Value; break;
+                                }
+                            }
+                            break;
+                        case "RD":
+                            prices = new Nullable<Double>[] { data.AS_RD_Q5, data.AS_RD_Q4, data.AS_RD_Q3, data.AS_RD_Q2, data.AS_RD_Q1 };
+                            foreach (Nullable<Double> i in prices)
+                            {
+                                if (i.HasValue)
+                                {
+                                    val = i.Value; break;
+                                }
+                            }
+                            break;
+                    }
+
+                    reserveSchedules.Add(new ReserveSchedule
+                    {
+                        Tagname = "from_SQL",
+                        Schedule = val,
+                        Timestamp = Convert.ToDateTime(now.AddMinutes(minMod).ToShortDateString() + " " + now.AddMinutes(minMod).ToString("HH:mm:00")),
+                        Interval = now.AddMinutes(minMod).ToString("HH:mm")
+                        // ,DataStatus = dataStatus
+                    });
+                }
+
+                // Compliance
+                for (int x = 0; x <= previousMinuteSpan; x = x + 5)
+                {
+                    query = $"select * from t_BidOffer where DateSchedule = '{shortDateString}' and Interval = {now.AddMinutes(-(minMod + x)).Hour + 1} and UnitNumber = '{unitNumber}'";
+                    data = db.Database.SqlQuery<OfferDB>(query).FirstOrDefault<OfferDB>();
+
+                    if (data == null)
+                    {
+                        reserveSchedules.Add(new ReserveSchedule
+                        {
+                            Tagname = "from_SQL",
+                            Schedule = null,
+                            // Actual = actual,
+                            Timestamp = Convert.ToDateTime(now.AddMinutes(-(minMod + x)).ToShortDateString() + " " + now.AddMinutes(-(minMod + x)).ToString("HH:mm:00")),
+                            Interval = now.AddMinutes(-(minMod + x)).ToString("HH:mm")
+                        });
+                    }
+                    else
+                    {
+                        switch (commodity)
+                        {
+                            case "RU":
+                                prices = new Nullable<Double>[] { data.AS_RU_Q5, data.AS_RU_Q4, data.AS_RU_Q3, data.AS_RU_Q2, data.AS_RU_Q1 };
+                                foreach (Nullable<Double> i in prices)
+                                {
+                                    if (i.HasValue)
+                                    {
+                                        val = i.Value; break;
+                                    }
+                                }
+                                break;
+                            case "RD":
+                                prices = new Nullable<Double>[] { data.AS_RD_Q5, data.AS_RD_Q4, data.AS_RD_Q3, data.AS_RD_Q2, data.AS_RD_Q1 };
+                                foreach (Nullable<Double> i in prices)
+                                {
+                                    if (i.HasValue)
+                                    {
+                                        val = i.Value; break;
+                                    }
+                                }
+                                break;
+                        }
+
+                        reserveSchedules.Add(new ReserveSchedule
+                        {
+                            Tagname = "from_SQL",
+                            Schedule = val,
+                            // Actual = actual,
+                            Timestamp = Convert.ToDateTime(now.AddMinutes(-(minMod + x)).ToShortDateString() + " " + now.AddMinutes(-(minMod + x)).ToString("HH:mm:00")),
+                            Interval = now.AddMinutes(-(minMod + x)).ToString("HH:mm")
+                        });
+                    }
+                }
+            }
+
+            return reserveSchedules;
+        }
+
         public List<ReserveScheduleView> GetReserveScheduleView(string unitNumber)
         {
             List<ReserveScheduleView> reserveScheduleViews = new List<ReserveScheduleView>();
@@ -242,6 +530,16 @@ namespace New_Trading_API.Services
                 Type = RMP,
                 ReserveSchedules = GetReserveSchedulePrice(unitNumber, EN, false)
             });
+            //reserveScheduleViews.Add(new ReserveScheduleView
+            //{
+            //    Type = RUP,
+            //    ReserveSchedules = GetReserveOfferPrice(unitNumber, "RU")
+            //});
+            //reserveScheduleViews.Add(new ReserveScheduleView
+            //{
+            //    Type = RDP,
+            //    ReserveSchedules = GetReserveOfferPrice(unitNumber, "RD")
+            //});
 
             return reserveScheduleViews;
         }
@@ -523,6 +821,9 @@ namespace New_Trading_API.Services
 
                 List<BidOfferControlMode> bidCmode = new List<BidOfferControlMode>();
                 List<GenRemarks> remarks = new List<GenRemarks>();
+                Nullable<Double> OfferPrice_RU = null;
+                Nullable<Double> OfferPrice_RD = null;
+                Nullable<Double>[] prices;
                 using (TradingEntities db2 = new TradingEntities())
                 {
                     // bid control mode / MOP
@@ -537,6 +838,63 @@ namespace New_Trading_API.Services
                     // general remarks
                     Str2 = $@"select [UnitNumber], [Value] from [t_UnitGeneralComments] where [UnitNumber] = '{unit.UnitNumber}'";
                     remarks = db2.Database.SqlQuery<GenRemarks>(Str2).ToList<GenRemarks>();
+
+                    // offer price
+                    string query = $"select * from [Trading].[dbo].[t_BidOffer] where DateSchedule = '{date}' and Interval = {mop_hour} and UnitNumber = '{unit.UnitNumber}'";
+                    var data = db2.Database.SqlQuery<OfferDB>(query).FirstOrDefault<OfferDB>();
+                    if (data != null)
+                    {
+                        // RU
+                        if (rtd_ru_val <= data.AS_RU_P1)
+                        {
+                            OfferPrice_RU = data.AS_RU_Q1;
+                        }
+                        else if (rtd_ru_val > data.AS_RU_P1 && rtd_ru_val <= data.AS_RU_P2)
+                        {
+                            OfferPrice_RU = data.AS_RU_Q2;
+                        }
+                        else if (rtd_ru_val > data.AS_RU_P2 && rtd_ru_val <= data.AS_RU_P3)
+                        {
+                            OfferPrice_RU = data.AS_RU_Q3;
+                        }
+                        else if (rtd_ru_val > data.AS_RU_P3 && rtd_ru_val <= data.AS_RU_P4)
+                        {
+                            OfferPrice_RU = data.AS_RU_Q4;
+                        }
+                        else if (rtd_ru_val > data.AS_RU_P4 && rtd_ru_val <= data.AS_RU_P5)
+                        {
+                            OfferPrice_RU = data.AS_RU_Q5;
+                        }
+                        else
+                        {
+                            OfferPrice_RU = null;
+                        }
+                        // RD
+                        if (rtd_rd_val <= data.AS_RD_P1)
+                        {
+                            OfferPrice_RD = data.AS_RD_Q1;
+                        }
+                        else if (rtd_rd_val > data.AS_RD_P1 && rtd_rd_val <= data.AS_RD_P2)
+                        {
+                            OfferPrice_RD = data.AS_RD_Q2;
+                        }
+                        else if (rtd_rd_val > data.AS_RD_P2 && rtd_rd_val <= data.AS_RD_P3)
+                        {
+                            OfferPrice_RD = data.AS_RD_Q3;
+                        }
+                        else if (rtd_rd_val > data.AS_RD_P3 && rtd_rd_val <= data.AS_RD_P4)
+                        {
+                            OfferPrice_RD = data.AS_RD_Q4;
+                        }
+                        else if (rtd_rd_val > data.AS_RD_P4 && rtd_rd_val <= data.AS_RD_P5)
+                        {
+                            OfferPrice_RD = data.AS_RD_Q5;
+                        }
+                        else
+                        {
+                            OfferPrice_RD = null;
+                        }
+                    }
                 }
                 string mop = (bidCmode.Count == 0) ? "" : bidCmode.First().ControlMode;
                 string remark = (remarks.Count == 0) ? "" : remarks.First().Value;
@@ -554,6 +912,8 @@ namespace New_Trading_API.Services
                     Price_RU = null,
                     Price_RD = null,
                     Price_CR = null,
+                    OfferPrice_RU = OfferPrice_RU,
+                    OfferPrice_RD = OfferPrice_RD,
                     Remarks = remark,
                     Timestamp = Convert.ToDateTime(dtDelayed10mins),
                     Interval = DateTime.Parse(dtDelayed10mins.ToString()).ToString("HH:mm"),

@@ -10,6 +10,8 @@ using System.Data.SqlClient;
 using System.Data;
 using System.Net.Mail;
 using System.Text;
+using NPOI.SS.Formula.Functions;
+using Newtonsoft.Json;
 
 namespace New_Trading_API.Controllers
 {
@@ -104,7 +106,13 @@ namespace New_Trading_API.Controllers
                     .SqlQuery<User>(StrQuery)
                     .ToList<User>();
             }
-            
+
+
+            GlobalFunctions.Log(logType: "GET_USER_LIST",
+            action: "Users List Success",
+            message: $"User info successfully retrieved.",
+            userName: GetUsername());
+
             return Request.CreateResponse(HttpStatusCode.OK, userList);
             
         }
@@ -130,6 +138,9 @@ namespace New_Trading_API.Controllers
         [Authorize]
         public HttpResponseMessage GetCurrentUserInfoWithPermission()
         {
+            var identity = (ClaimsIdentity)User.Identity;
+            var userID = identity.FindFirst("UserID").Value;
+            var username = identity.FindFirst("UserName").Value;
             User user = new User();
             StrQuery = @"SELECT top 1 [UserID]
                       ,[UserName]
@@ -172,13 +183,17 @@ namespace New_Trading_API.Controllers
 
             using (TradingEntities db = new TradingEntities())
             {
-                var identity = (ClaimsIdentity)User.Identity;
-                var userID = identity.FindFirst("UserID").Value;
+                
                 var paramUserID = new SqlParameter("@userID", userID);
 
                 user = db.Database
                     .SqlQuery<User>(StrQuery, paramUserID).FirstOrDefault<User>();
             }
+
+            GlobalFunctions.Log(logType: "GET_USER_INFO",
+            action: "User Info Success",
+            message: $"User info successfully retrieved.",
+            userName: GetUsername());
 
             return Request.CreateResponse(HttpStatusCode.OK, user);
 
@@ -271,6 +286,11 @@ namespace New_Trading_API.Controllers
                     .ToList<AccountTypeAndPermission>();
             }
 
+            GlobalFunctions.Log(logType: "GET_ACCOUNT_TYPE",
+            action: "Account Type Success",
+            message: $"Account Type successfully retrieved.",
+            userName: GetUsername());
+
             return Request.CreateResponse(HttpStatusCode.OK, accountTypeList);
 
         }
@@ -344,43 +364,62 @@ namespace New_Trading_API.Controllers
                 return Content(HttpStatusCode.BadRequest, "Email address type is required");
             } else
             {
-                using (var db = new TradingEntities())
+                try
                 {
-                    //var str = $"select top 1 DefaultPassword from a_UserAccountType where AccountTypeID = {model.AccountTypeID}";
-                    //var dtAccType = GlobalFunctions.DataReader(str);
-                    string defaultPassword = GlobalFunctions.Encrypt("tr@d1ngp@ssw0rd");
-                    //if (dtAccType.Rows.Count > 0)
-                    //{
-                    //    if(dtAccType.Rows[0]["DefaultPassword"].ToString() != "")
-                    //    {
-                    //        defaultPassword = dtAccType.Rows[0]["DefaultPassword"].ToString();
-                    //    }
-                    //}
+                    using (var db = new TradingEntities())
+                    {
+                        //var str = $"select top 1 DefaultPassword from a_UserAccountType where AccountTypeID = {model.AccountTypeID}";
+                        //var dtAccType = GlobalFunctions.DataReader(str);
+                        string defaultPassword = GlobalFunctions.Encrypt("tr@d1ngp@ssw0rd");
+                        //if (dtAccType.Rows.Count > 0)
+                        //{
+                        //    if(dtAccType.Rows[0]["DefaultPassword"].ToString() != "")
+                        //    {
+                        //        defaultPassword = dtAccType.Rows[0]["DefaultPassword"].ToString();
+                        //    }
+                        //}
 
-                    var checkrec = db.a_UserAccount.Where(a => a.UserName == model.UserName && a.IsActive == true).FirstOrDefault<a_UserAccount>();
-                    if (checkrec != null)
-                    {
-                        return Content(HttpStatusCode.BadRequest, "Username already exist");
-                    }else
-                    {
-                        var tbl = new a_UserAccount()
+                        var checkrec = db.a_UserAccount.Where(a => a.UserName == model.UserName && a.IsActive == true).FirstOrDefault<a_UserAccount>();
+                        if (checkrec != null)
                         {
-                            UserName = model.UserName,
-                            Password = defaultPassword,
-                            AccountTypeID = model.AccountTypeID,
-                            FirstName = model.FirstName,
-                            LastName = model.LastName,
-                            EmailAddress = model.EmailAddress,
-                            IsActive = true,
-                            CreatedBy = model.CreatedBy,
-                            CreationDate = DateTime.Now
-                        };
-                        db.a_UserAccount.Add(tbl);
-                        db.SaveChanges();
+                            return Content(HttpStatusCode.BadRequest, "Username already exist");
+                        }
+                        else
+                        {
+                            var tbl = new a_UserAccount()
+                            {
+                                UserName = model.UserName,
+                                Password = defaultPassword,
+                                AccountTypeID = model.AccountTypeID,
+                                FirstName = model.FirstName,
+                                LastName = model.LastName,
+                                EmailAddress = model.EmailAddress,
+                                IsActive = true,
+                                CreatedBy = model.CreatedBy,
+                                CreationDate = DateTime.Now
+                            };
+                            db.a_UserAccount.Add(tbl);
+                            db.SaveChanges();
 
-                        return Content(HttpStatusCode.OK, RetrivedRecord(tbl.UserID));
+
+                            GlobalFunctions.Log(logType: "CREATE_USER",
+                            action: "Create User Success",
+                            message: $"User successfully created.",
+                            newValues: JsonConvert.SerializeObject(model),
+                            userName: GetUsername());
+                            return Content(HttpStatusCode.OK, RetrivedRecord(tbl.UserID));
+                        }
                     }
                 }
+                catch (Exception ex) {
+                    GlobalFunctions.Log(logType: "CREATE_USER",
+                            action: "Create User Error",
+                            message: ex.Message,
+                            userName: GetUsername());
+
+                    return Content(HttpStatusCode.InternalServerError, ex.Message);
+                }
+                
             }
         }
 
@@ -410,30 +449,52 @@ namespace New_Trading_API.Controllers
             }
             else
             {
-                using (var db = new TradingEntities())
+                try
                 {
-                    var checkrec = db.a_UserAccount.Where(a =>
-                    a.UserName == model.UserName && a.IsActive == true
-                    && a.UserID != id).FirstOrDefault<a_UserAccount>();
+                    using (var db = new TradingEntities())
+                    {
+                        var checkrec = db.a_UserAccount.Where(a =>
+                        a.UserName == model.UserName && a.IsActive == true
+                        && a.UserID != id).FirstOrDefault<a_UserAccount>();
 
-                    if (checkrec != null)
-                    {
-                        return Content(HttpStatusCode.BadRequest, "Record already exist");
-                    }
-                    else
-                    {
-                        var tbl = db.a_UserAccount.Where(a => a.UserID == id).FirstOrDefault<a_UserAccount>();
-                        tbl.UserName = model.UserName;
-                        tbl.AccountTypeID = model.AccountTypeID;
-                        tbl.FirstName = model.FirstName;
-                        tbl.LastName = model.LastName;
-                        tbl.EmailAddress = model.EmailAddress;
-                        tbl.ModifiedBy = model.ModifiedBy;
-                        tbl.ModificationDate = DateTime.Now;
-                        db.SaveChanges();
-                        return Content(HttpStatusCode.OK, RetrivedRecord(tbl.UserID));
+                        if (checkrec != null)
+                        {
+                            return Content(HttpStatusCode.BadRequest, "Record already exist");
+                        }
+                        else
+                        {
+                            var tbl = db.a_UserAccount.Where(a => a.UserID == id).FirstOrDefault<a_UserAccount>();
+                            tbl.UserName = model.UserName;
+                            tbl.AccountTypeID = model.AccountTypeID;
+                            tbl.FirstName = model.FirstName;
+                            tbl.LastName = model.LastName;
+                            tbl.EmailAddress = model.EmailAddress;
+                            tbl.ModifiedBy = model.ModifiedBy;
+                            tbl.ModificationDate = DateTime.Now;
+                            db.SaveChanges();
+
+                            GlobalFunctions.Log(logType: "UPDATE_USER",
+                            action: "Update User Success",
+                            message: $"User successfully updated.",
+                            newValues: JsonConvert.SerializeObject(model),
+                            userName: GetUsername());
+
+                            return Content(HttpStatusCode.OK, RetrivedRecord(tbl.UserID));
+                        }
                     }
                 }
+                catch (Exception ex)
+                {
+                    GlobalFunctions.Log(logType: "UPDATE_USER",
+                            action: "Update User Error",
+                            message: ex.Message,
+                            userName: GetUsername());
+
+                    return Content(HttpStatusCode.InternalServerError, ex.Message);
+                }
+                
+
+                
             }
         }
 
@@ -445,6 +506,13 @@ namespace New_Trading_API.Controllers
             var userID = new SqlParameter("@id", id);
 
             GlobalFunctions.DataReader(str, userID);
+
+
+            GlobalFunctions.Log(logType: "DELETE_USER",
+                        action: "Delete User Success",
+                        message: $"User successfully deleted.",
+                        newValues: $"UserId: {id}",
+                        userName: GetUsername());
 
             return Ok();
         }
@@ -458,6 +526,12 @@ namespace New_Trading_API.Controllers
 
             GlobalFunctions.DataReader(str, userID);
 
+            GlobalFunctions.Log(logType: "DISABLE_USER",
+                        action: "Disable User Success",
+                        message: $"User Info successfully disabled.",
+                        newValues: $"UserId: {id}",
+                        userName: GetUsername());
+
             return Ok();
         }
 
@@ -470,6 +544,12 @@ namespace New_Trading_API.Controllers
 
             GlobalFunctions.DataReader(str, userID);
 
+
+            GlobalFunctions.Log(logType: "ENABLE_USER",
+                        action: "Enable User Success",
+                        message: $"User Info successfully enabled.",
+                        newValues: $"UserId: {id}",
+                        userName: GetUsername());
             return Ok();
         }
 
@@ -477,59 +557,60 @@ namespace New_Trading_API.Controllers
         [Authorize]
         public IHttpActionResult ResetPassword(int id , [FromBody] a_UserAccount model ) 
         {
-            //var str = @"update a_UserAccount set Password = @password where UserID = @id";
-
-            //var strAcc = $"select top 1 DefaultPassword from a_UserAccountType where AccountTypeID = {model.AccountTypeID}";
-            //var dtAccType = GlobalFunctions.DataReader(strAcc);
-            string defaultPassword = GlobalFunctions.Encrypt("tr@d1ngp@ssw0rd");
-            //if (dtAccType.Rows.Count > 0)
-            //{
-            //    if (dtAccType.Rows[0]["DefaultPassword"].ToString() != "")
-            //    {
-            //        defaultPassword = dtAccType.Rows[0]["DefaultPassword"].ToString();
-            //    }
-            //}
-
-
-            var str = $@"update a_UserAccount
+            try
+            {
+                string defaultPassword = GlobalFunctions.Encrypt("tr@d1ngp@ssw0rd");
+                var str = $@"update a_UserAccount
 	                    set Password = '{defaultPassword}'
                       where UserID = @id";
 
 
-            var userID = new SqlParameter("@id", id);
-            //var password = new SqlParameter("@password", GlobalFunctions.Encrypt("Rtd$mc2022"));
-            GlobalFunctions.DataReader(str, userID);
+                var userID = new SqlParameter("@id", id);
+                //var password = new SqlParameter("@password", GlobalFunctions.Encrypt("Rtd$mc2022"));
+                GlobalFunctions.DataReader(str, userID);
 
-            str = @"select * from a_UserAccount where UserID = @id";
-            userID = new SqlParameter("@id", id);
-            var dt = GlobalFunctions.DataReader(str, userID);
+                GlobalFunctions.Log(logType: "RESET_USER_PASSWORD",
+                            action: "Reset User Password Success",
+                            message: $"User password successfully reset.",
+                            newValues: $"UserId: {id}",
+                            userName: GetUsername());
+
+                return Ok();
+            }
+            catch (Exception ex) {
+                GlobalFunctions.Log(logType: "RESET_USER_PASSWORD",
+                            action: "Reset User Password Error",
+                            message: ex.Message,
+                            userName: GetUsername());
+                return Content(HttpStatusCode.InternalServerError, ex.Message);
+            }
             
-            str = @"select * from [a_CompanySetting]";
-            var dtemail = GlobalFunctions.DataReader(str);
 
-            try
-            {
-                if (dt.Rows.Count > 0 && dt.Rows[0]["EmailAddress"].ToString() != "")
-                {
-                    MailMessage mailMessage = new MailMessage(dtemail.Rows[0]["EmailAddress"].ToString(), dt.Rows[0]["EmailAddress"].ToString());
-                    mailMessage.Subject = "Change password";
-                    mailMessage.Body = @"This is to inform you that your password has been reset to default password (p@ssw0rd).";
 
-                    SmtpClient smtpClient = new SmtpClient(dtemail.Rows[0]["HostName"].ToString(), Convert.ToInt32(dtemail.Rows[0]["Port"].ToString()));
-                    smtpClient.Credentials = new System.Net.NetworkCredential()
-                    {
-                        UserName = dtemail.Rows[0]["EmailAddress"].ToString(),
-                        Password = GlobalFunctions.Decrypt(dtemail.Rows[0]["Password"].ToString())
-                    };
 
-                    smtpClient.Send(mailMessage);
-                }
-            }
-            catch
-            {
+            //try
+            //{
+            //    if (dt.Rows.Count > 0 && dt.Rows[0]["EmailAddress"].ToString() != "")
+            //    {
+            //        MailMessage mailMessage = new MailMessage(dtemail.Rows[0]["EmailAddress"].ToString(), dt.Rows[0]["EmailAddress"].ToString());
+            //        mailMessage.Subject = "Change password";
+            //        mailMessage.Body = @"This is to inform you that your password has been reset to default password (p@ssw0rd).";
+
+            //        SmtpClient smtpClient = new SmtpClient(dtemail.Rows[0]["HostName"].ToString(), Convert.ToInt32(dtemail.Rows[0]["Port"].ToString()));
+            //        smtpClient.Credentials = new System.Net.NetworkCredential()
+            //        {
+            //            UserName = dtemail.Rows[0]["EmailAddress"].ToString(),
+            //            Password = GlobalFunctions.Decrypt(dtemail.Rows[0]["Password"].ToString())
+            //        };
+
+            //        smtpClient.Send(mailMessage);
+            //    }
+            //}
+            //catch
+            //{
            
-            }
-            return Ok();
+            //}
+           
         }
 
         [HttpPut]
@@ -537,43 +618,53 @@ namespace New_Trading_API.Controllers
         [Authorize]
         public IHttpActionResult ChangePassword(int userid, [FromBody] ChangePassword model)
         {
-            var str = @"select * from a_UserAccount where UserID = @id";
-            var userId = new SqlParameter("@id", userid);
-            var dt = GlobalFunctions.DataReader(str, userId);
-
-           
-
-            if (dt.Rows.Count > 0)
+            try
             {
-                if (GlobalFunctions.Decrypt(dt.Rows[0]["Password"].ToString()) == model.currentPassword)
-                {
-                    if (model.newPassword == model.confirmPassword)
-                    {
-                        str = @"update a_UserAccount set Password = @passWord where UserID = @id";
-                        userId = new SqlParameter("@id", userid);
-                        var passWord = new SqlParameter("@passWord", GlobalFunctions.Encrypt(model.newPassword));
-                        GlobalFunctions.DataReader(str, userId, passWord);
+                var str = @"select * from a_UserAccount where UserID = @id";
+                var userId = new SqlParameter("@id", userid);
+                var dt = GlobalFunctions.DataReader(str, userId);
 
-                        return Ok();
+                if (dt.Rows.Count > 0)
+                {
+                    if (GlobalFunctions.Decrypt(dt.Rows[0]["Password"].ToString()) == model.currentPassword)
+                    {
+                        if (model.newPassword == model.confirmPassword)
+                        {
+                            str = @"update a_UserAccount set Password = @passWord where UserID = @id";
+                            userId = new SqlParameter("@id", userid);
+                            var passWord = new SqlParameter("@passWord", GlobalFunctions.Encrypt(model.newPassword));
+                            GlobalFunctions.DataReader(str, userId, passWord);
+
+                            GlobalFunctions.Log(logType: "CHANGED_USER_PASSWORD",
+                            action: "Change User Password Success",
+                            message: $"User password successfully changed.",
+                            newValues: $"UserId: {userid}",
+                            userName: GetUsername());
+                            return Ok();
+                        }
+                        else
+                        {
+                            return Content(HttpStatusCode.BadRequest, "Password did not match");
+                        }
                     }
                     else
                     {
-                        return Content(HttpStatusCode.BadRequest, "Password did not match");
+                        return Content(HttpStatusCode.BadRequest, "Current password must not match on the existing password.");
                     }
                 }
                 else
                 {
                     return Content(HttpStatusCode.BadRequest, "Current password is incorrect");
                 }
+
             }
-            else
-            {
-                return Content(HttpStatusCode.BadRequest, "Current password is incorrect");
+            catch (Exception ex) {
+                GlobalFunctions.Log(logType: "CHANGED_USER_PASSWORD",
+                            action: "Change User Password Error",
+                            message: ex.Message,
+                            userName: GetUsername());
+                return Content(HttpStatusCode.InternalServerError, ex.Message);
             }
-
-
-
-
             
         }
 
@@ -720,6 +811,12 @@ namespace New_Trading_API.Controllers
                 return Content(HttpStatusCode.OK, ex.Message);
             }
             return Content(HttpStatusCode.OK, "Logs Successfully");
+        }
+
+        private string GetUsername()
+        {
+            var identity = (ClaimsIdentity)User.Identity;
+            return identity.FindFirst("UserName").Value;
         }
     }
 }

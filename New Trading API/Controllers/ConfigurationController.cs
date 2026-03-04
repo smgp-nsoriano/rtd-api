@@ -7,6 +7,7 @@ using System.Web.Http;
 using New_Trading_API.Models;
 using System.Security.Claims;
 using System.Data.SqlClient;
+using Newtonsoft.Json;
 
 namespace New_Trading_API.Controllers
 {
@@ -27,6 +28,11 @@ namespace New_Trading_API.Controllers
 
                 siteList = db.Database.SqlQuery<Site>(Str, paramCompanyID).ToList<Site>();
             }
+
+            GlobalFunctions.Log(logType: "GET_SITE",
+                            action: "Sites List Retrieved Success",
+                            message: "Sites retrieved successfully.",
+                            userName: GetUsername());
 
             return Request.CreateResponse(HttpStatusCode.OK, siteList);
         }
@@ -94,6 +100,10 @@ namespace New_Trading_API.Controllers
 
             }
 
+            GlobalFunctions.Log(logType: "GET_UNIT",
+                            action: "Units List Retrieved Success",
+                            message: "Units retrieved successfully.",
+                            userName: GetUsername());
             return Request.CreateResponse(HttpStatusCode.OK, unitList);
         }
 
@@ -127,6 +137,10 @@ namespace New_Trading_API.Controllers
                 webservice = db.Database.SqlQuery<WebServiceSet>(StrQuery, paramUntID).FirstOrDefault<WebServiceSet>();
             }
 
+            GlobalFunctions.Log(logType: "GET_WEBSERVICE_SETTINGS",
+                            action: "Webservice Settings Retrieved Success",
+                            message: $"Webservice Settings for UnitId {UnitID} retrieved successfully.",
+                            userName: GetUsername());
             return Request.CreateResponse(HttpStatusCode.OK, webservice);
         }
 
@@ -142,6 +156,10 @@ namespace New_Trading_API.Controllers
                 webUrl = db.Database.SqlQuery<WebServiceUrl>(StrQuery).ToList<WebServiceUrl>();
             }
 
+            GlobalFunctions.Log(logType: "GET_WEBSERVICE_URL",
+                            action: "Webservice Urls Retrieved Success",
+                            message: $"Webservice urls retrieved successfully.",
+                            userName: GetUsername());
             return Request.CreateResponse(HttpStatusCode.OK, webUrl);
         }
 
@@ -174,6 +192,12 @@ namespace New_Trading_API.Controllers
                             ")";
 
                     db.Database.ExecuteSqlCommand(StrQuery);
+
+                    GlobalFunctions.Log(logType: "CREATE_SITE",
+                           action: "Site Create Success",
+                           message: $"Site created successfully.",
+                           newValues: JsonConvert.SerializeObject(model),
+                           userName: GetUsername());
                 }
                 else
                 {
@@ -191,6 +215,12 @@ namespace New_Trading_API.Controllers
                                     "where SiteID = " + model.SiteID;
 
                         db.Database.ExecuteSqlCommand(StrQuery);
+
+                        GlobalFunctions.Log(logType: "UPDATE_SITE",
+                          action: "Site Update Success",
+                          message: $"Site updated successfully.",
+                          newValues: JsonConvert.SerializeObject(model),
+                          userName: GetUsername());
                     }
                 }
             }
@@ -228,7 +258,11 @@ namespace New_Trading_API.Controllers
                            " where UnitID = " + model.UnitID;
 
                         db.Database.ExecuteSqlCommand(StrQuery);
-
+                        GlobalFunctions.Log(logType: "UPDATE_UNIT",
+                          action: "Unit Update Success",
+                          message: $"Unit updated successfully.",
+                          newValues: JsonConvert.SerializeObject(model),
+                          userName: GetUsername());
                     }
                     else
                     {
@@ -241,6 +275,12 @@ namespace New_Trading_API.Controllers
                             " ,getdate() ,'','','"+ model.BColor + "','" + model.FColor + "')";
 
                         db.Database.ExecuteSqlCommand(StrQuery);
+                        GlobalFunctions.Log(logType: "CREATE_UNIT",
+                          action: "Unit Create Success",
+                          message: $"Unit created successfully.",
+                          newValues: JsonConvert.SerializeObject(model),
+                          userName: GetUsername());
+                        
                     }
                 }
             }
@@ -268,6 +308,12 @@ namespace New_Trading_API.Controllers
                                 " ,Type = '" + model.Type + "'" +
                                 " where WebID = " + model.WebID;
                         db.Database.ExecuteSqlCommand(StrQuery);
+
+                       GlobalFunctions.Log(logType: "UPDATE_WEBSERVICE_URL",
+                       action: "Webservice Url Update Success",
+                       message: $"Webservice url updated successfully.",
+                       newValues: JsonConvert.SerializeObject(model),
+                       userName: GetUsername());
                     }
                     else
                     {
@@ -276,6 +322,12 @@ namespace New_Trading_API.Controllers
                             "(ULR, Type ,Isactive)" +
                             " Values('" + model.URL + "','" + model.Type + "' ,1)";
                         db.Database.ExecuteSqlCommand(StrQuery);
+
+                        GlobalFunctions.Log(logType: "CREATE_WEBSERVICE_URL",
+                        action: "Webservice Url Create Success",
+                        message: $"Webservice url created successfully.",
+                        newValues: JsonConvert.SerializeObject(model),
+                        userName: GetUsername());
                     }
                 }
                 catch
@@ -299,6 +351,11 @@ namespace New_Trading_API.Controllers
                 db.Database.ExecuteSqlCommand(StrQuery);
             }
 
+            GlobalFunctions.Log(logType: "DELETE_SITE",
+                        action: "Site Delete Success",
+                        message: $"Site deleted successfully.",
+                        newValues: $"SiteID:{SiteID}",
+                        userName: GetUsername());
             return Ok();
         }
 
@@ -315,7 +372,18 @@ namespace New_Trading_API.Controllers
                 db.Database.ExecuteSqlCommand(StrQuery);
             }
 
+            GlobalFunctions.Log(logType: "DELETE_UNIT",
+                        action: "Unit Delete Success",
+                        message: $"Unit deleted successfully.",
+                        newValues: $"UnitID:{UnitID}",
+                        userName: GetUsername());
             return Ok();
+        }
+
+        private string GetUsername()
+        {
+            var identity = (ClaimsIdentity)User.Identity;
+            return identity.FindFirst("UserName").Value;
         }
     }
 }

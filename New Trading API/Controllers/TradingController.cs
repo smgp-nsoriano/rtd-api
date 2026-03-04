@@ -10,6 +10,8 @@ using OSIsoft.AF.Time;
 using OSIsoft.AF.Data;
 using New_Trading_API.Models;
 using System.Data;
+using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace New_Trading_API.Controllers
 {
@@ -789,6 +791,12 @@ namespace New_Trading_API.Controllers
                 
                 db.Database.ExecuteSqlCommand(query);
             }
+
+            GlobalFunctions.Log(logType: "SAVE_OVERRIDE_VALUE",
+                            action: "Override Value Success",
+                            message: $"Override value successfully saved.",
+                            newValues: JsonConvert.SerializeObject(Model),
+                            userName: GetUsername());
             return Content(HttpStatusCode.OK, "Value successfully saved.");
         }
 
@@ -801,6 +809,12 @@ namespace New_Trading_API.Controllers
                 string query = $"exec [sp_SaveMOTValue] '{Model.UnitNumber}','{Model.Value}','{Model.IsUse}'";
                 db.Database.ExecuteSqlCommand(query);
             }
+
+            GlobalFunctions.Log(logType: "SAVE_MOT_VALUE",
+                            action: "MOT Value Success",
+                            message: $"MOT value successfully saved.",
+                            newValues: JsonConvert.SerializeObject(Model),
+                            userName: GetUsername());
             return Content(HttpStatusCode.OK, "Value successfully saved.");
         }
 
@@ -1955,6 +1969,12 @@ namespace New_Trading_API.Controllers
 
                 piServer.UpdateValues(valuesToWrite, AFUpdateOption.Replace, AFBufferOption.BufferIfPossible);
             }
+
+            GlobalFunctions.Log(logType: "SAVE_PB_REASON_REMARKS",
+                            action: "PB Reason Remarks Success",
+                            message: $"Remarks successfully saved.",
+                            newValues: JsonConvert.SerializeObject(Model),
+                            userName: GetUsername());
             return Content(HttpStatusCode.OK, "Value successfully saved.");
         }
 
@@ -1967,6 +1987,12 @@ namespace New_Trading_API.Controllers
                 string query = $"exec[sp_SaveGeneralComment] '{Model.UnitNumber}','{Model.Value}'";
                 db.Database.ExecuteSqlCommand(query);
             }
+
+            GlobalFunctions.Log(logType: "SAVE_PB_REASON_GENERAL_REMARKS",
+                            action: "PB Reason General Remarks Success",
+                            message: $"General remarks successfully saved.",
+                            newValues: JsonConvert.SerializeObject(Model),
+                            userName: GetUsername());
             return Content(HttpStatusCode.OK, "Value successfully saved.");
         }
 
@@ -3623,5 +3649,11 @@ namespace New_Trading_API.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, new { sched = sched, genRemarks = genRemarks });
         }
         #endregion
+
+        private string GetUsername()
+        {
+            var identity = (ClaimsIdentity)User.Identity;
+            return identity.FindFirst("UserName").Value;
+        }
     }
 }
