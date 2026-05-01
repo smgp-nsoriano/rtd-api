@@ -1,7 +1,12 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\Admin\\Documents\\LNGPH\\rtd-api\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|c:\\users\\admin\\documents\\lngph\\rtd-api\\new trading api\\controllers\\marketdatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A23B5FB1-0D69-4E11-B228-0509A47612E6}|New Trading API\\New Trading API.csproj|solutionrelative:new trading api\\controllers\\marketdatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,7 +14,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -34,6 +39,23 @@
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MarketDataController.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\Documents\\LNGPH\\rtd-api\\New Trading API\\Controllers\\MarketDataController.cs",
+              "RelativeDocumentMoniker": "New Trading API\\Controllers\\MarketDataController.cs",
+              "ToolTip": "C:\\Users\\Admin\\Documents\\LNGPH\\rtd-api\\New Trading API\\Controllers\\MarketDataController.cs",
+              "RelativeToolTip": "New Trading API\\Controllers\\MarketDataController.cs",
+              "ViewState": "AgIAAPoAAAAAAAAAAAAEwAYCAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-30T00:23:44.227Z",
+              "EditorCaption": ""
             }
           ]
         }

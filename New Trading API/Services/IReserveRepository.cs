@@ -231,83 +231,199 @@ namespace New_Trading_API.Services
             return reserveSchedules;
         }
 
-        public Nullable<Double> GetSpecificBidOfferPrice(string shortDateString, int interv, string unitNumber, string commodity, Nullable<Double> val)
+        //public Nullable<Double> GetSpecificBidOfferPrice(string shortDateString, int interv, string unitNumber, string commodity, Nullable<Double> val)
+        //{
+        //    Nullable<Double> offer_price = null;
+        //    string query = "";
+        //    var data = new OfferDB();
+
+        //    if (commodity.ToLower() == RU.ToLower())
+        //    {
+        //        using (TradingEntities db = new TradingEntities())
+        //        {
+        //            query = $"select * from [Trading].[dbo].[t_BidOffer] where DateSchedule = '{shortDateString}' and Interval = {interv} and UnitNumber = '{unitNumber}'";
+        //            data = db.Database.SqlQuery<OfferDB>(query).FirstOrDefault<OfferDB>();
+
+        //            if (data != null)
+        //            {
+        //                if (val <= data.AS_RU_P1)
+        //                {
+        //                    offer_price = data.AS_RU_Q1;
+        //                }
+        //                else if (val > data.AS_RU_P1 && val <= data.AS_RU_P2)
+        //                {
+        //                    offer_price = data.AS_RU_Q2;
+        //                }
+        //                else if (val > data.AS_RU_P2 && val <= data.AS_RU_P3)
+        //                {
+        //                    offer_price = data.AS_RU_Q3;
+        //                }
+        //                else if (val > data.AS_RU_P3 && val <= data.AS_RU_P4)
+        //                {
+        //                    offer_price = data.AS_RU_Q4;
+        //                }
+        //                else if (val > data.AS_RU_P4 && val <= data.AS_RU_P5)
+        //                {
+        //                    offer_price = data.AS_RU_Q5;
+        //                }
+        //                else
+        //                {
+        //                    offer_price = null;
+        //                }
+        //            }
+        //        }
+        //    }
+        //    if (commodity.ToLower() == RD.ToLower())
+        //    {
+        //        using (TradingEntities db = new TradingEntities())
+        //        {
+        //            query = $"select * from [Trading].[dbo].[t_BidOffer] where DateSchedule = '{shortDateString}' and Interval = {interv} and UnitNumber = '{unitNumber}'";
+        //            data = db.Database.SqlQuery<OfferDB>(query).FirstOrDefault<OfferDB>();
+
+        //            if (data != null)
+        //            {
+        //                if (val <= data.AS_RD_P1)
+        //                {
+        //                    offer_price = data.AS_RD_Q1;
+        //                }
+        //                else if (val > data.AS_RD_P1 && val <= data.AS_RD_P2)
+        //                {
+        //                    offer_price = data.AS_RD_Q2;
+        //                }
+        //                else if (val > data.AS_RD_P2 && val <= data.AS_RD_P3)
+        //                {
+        //                    offer_price = data.AS_RD_Q3;
+        //                }
+        //                else if (val > data.AS_RD_P3 && val <= data.AS_RD_P4)
+        //                {
+        //                    offer_price = data.AS_RD_Q4;
+        //                }
+        //                else if (val > data.AS_RD_P4 && val <= data.AS_RD_P5)
+        //                {
+        //                    offer_price = data.AS_RD_Q5;
+        //                }
+        //                else
+        //                {
+        //                    offer_price = null;
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    return offer_price;
+        //}
+
+
+        public Nullable<double> GetSpecificBidOfferPrice(string shortDateString,int interv,string unitNumber,string commodity,Nullable<double> val)
         {
-            Nullable<Double> offer_price = null;
-            string query = "";
-            var data = new OfferDB();
+            Nullable<double> offer_price = null;
 
-            if (commodity.ToLower() == RU.ToLower())
+            DateTime now = DateTime.Now;
+
+            // ======================================================
+            // STEP 0: CURRENT BASE 5-MIN ALIGNMENT
+            // ======================================================
+            DateTime currentInterval = new DateTime(
+                now.Year,
+                now.Month,
+                now.Day,
+                now.Hour,
+                (now.Minute / 5) * 5,
+                0
+            );
+
+            int offset = interv - 6;
+
+            DateTime intervalTime = currentInterval.AddMinutes(offset * 5);
+
+            // ======================================================
+            // STEP 1: DELAYED COLUMN (+15 mins RTD preview)
+            // ======================================================
+            DateTime delayedTime = now.AddMinutes(15);
+
+            delayedTime = new DateTime(
+                delayedTime.Year,
+                delayedTime.Month,
+                delayedTime.Day,
+                delayedTime.Hour,
+                (delayedTime.Minute / 5) * 5,
+                0
+            );
+
+            // ======================================================
+            // STEP 2: FINAL TIME SELECTION
+            // ======================================================
+            DateTime finalTime;
+
+            if (interv == 5)
             {
-                using (TradingEntities db = new TradingEntities())
-                {
-                    query = $"select * from [Trading].[dbo].[t_BidOffer] where DateSchedule = '{shortDateString}' and Interval = {interv} and UnitNumber = '{unitNumber}'";
-                    data = db.Database.SqlQuery<OfferDB>(query).FirstOrDefault<OfferDB>();
-
-                    if (data != null)
-                    {
-                        if (val <= data.AS_RU_P1)
-                        {
-                            offer_price = data.AS_RU_Q1;
-                        }
-                        else if (val > data.AS_RU_P1 && val <= data.AS_RU_P2)
-                        {
-                            offer_price = data.AS_RU_Q2;
-                        }
-                        else if (val > data.AS_RU_P2 && val <= data.AS_RU_P3)
-                        {
-                            offer_price = data.AS_RU_Q3;
-                        }
-                        else if (val > data.AS_RU_P3 && val <= data.AS_RU_P4)
-                        {
-                            offer_price = data.AS_RU_Q4;
-                        }
-                        else if (val > data.AS_RU_P4 && val <= data.AS_RU_P5)
-                        {
-                            offer_price = data.AS_RU_Q5;
-                        }
-                        else
-                        {
-                            offer_price = null;
-                        }
-                    }
-                }
+                finalTime = delayedTime;
             }
-            if (commodity.ToLower() == RD.ToLower())
+            else
             {
-                using (TradingEntities db = new TradingEntities())
-                {
-                    query = $"select * from [Trading].[dbo].[t_BidOffer] where DateSchedule = '{shortDateString}' and Interval = {interv} and UnitNumber = '{unitNumber}'";
-                    data = db.Database.SqlQuery<OfferDB>(query).FirstOrDefault<OfferDB>();
+                finalTime = intervalTime;
+            }
 
-                    if (data != null)
-                    {
-                        if (val <= data.AS_RD_P1)
-                        {
-                            offer_price = data.AS_RD_Q1;
-                        }
-                        else if (val > data.AS_RD_P1 && val <= data.AS_RD_P2)
-                        {
-                            offer_price = data.AS_RD_Q2;
-                        }
-                        else if (val > data.AS_RD_P2 && val <= data.AS_RD_P3)
-                        {
-                            offer_price = data.AS_RD_Q3;
-                        }
-                        else if (val > data.AS_RD_P3 && val <= data.AS_RD_P4)
-                        {
-                            offer_price = data.AS_RD_Q4;
-                        }
-                        else if (val > data.AS_RD_P4 && val <= data.AS_RD_P5)
-                        {
-                            offer_price = data.AS_RD_Q5;
-                        }
-                        else
-                        {
-                            offer_price = null;
-                        }
-                    }
+            // ======================================================
+            // STEP 3: PI CONNECTION
+            // ======================================================
+            PIServers piServers = new PIServers();
+            PIServer piServer = piServers[PIServerName];
+
+            string prefix = commodity.ToUpper() == "RU" ? "BID_RU" : "BID_RD";
+
+            Func<string, string> tag = (x) => $"{prefix}_{unitNumber}_{x}";
+
+            Func<string, double?> getVal = (suffix) =>
+            {
+                try
+                {
+                    var pt = PIPoint.FindPIPoint(piServer, tag(suffix));
+                    if (pt == null) return null;
+
+                    return GetPIValue2(pt, finalTime.ToString());
                 }
+                catch
+                {
+                    return null;
+                }
+            };
+
+            // ======================================================
+            // STEP 4: FETCH PI CURVE (P/Q)
+            // ======================================================
+            double? p1 = getVal("P1");
+            double? p2 = getVal("P2");
+            double? p3 = getVal("P3");
+            double? p4 = getVal("P4");
+            double? p5 = getVal("P5");
+
+            double? q1 = getVal("Q1");
+            double? q2 = getVal("Q2");
+            double? q3 = getVal("Q3");
+            double? q4 = getVal("Q4");
+            double? q5 = getVal("Q5");
+
+            // ======================================================
+            // STEP 5: VALIDATION
+            // ======================================================
+            if (!val.HasValue)
+                return null;
+
+            if (!p1.HasValue && !p2.HasValue && !p3.HasValue && !p4.HasValue && !p5.HasValue)
+                return null;
+
+            // ======================================================
+            // STEP 6: PI TIER EVALUATION (FIXED LOGIC)
+            // ======================================================
+            if (commodity.ToLower() == RU.ToLower() || commodity.ToLower() == RD.ToLower())
+            {
+                if (p5.HasValue && val >= p5) offer_price = q5;
+                else if (p4.HasValue && val >= p4) offer_price = q4;
+                else if (p3.HasValue && val >= p3) offer_price = q3;
+                else if (p2.HasValue && val >= p2) offer_price = q2;
+                else if (p1.HasValue && val >= p1) offer_price = q1;
+                else offer_price = null;
             }
 
             return offer_price;
