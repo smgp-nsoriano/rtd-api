@@ -37,200 +37,199 @@ namespace New_Trading_API.Services
         const int currentInterval = 0;
         const int previousMinuteSpan = 45;
 
-        public List<ReserveSchedule> GetReserveSchedulePrice(string unitNumber, string commodity, bool isScedule)
-        {
-            string rtdTagname = string.Empty;
-            string hapTagname = string.Empty;
-            string actualTagname = string.Empty;
-            
-            if (isScedule)
-            {
-                if (commodity.ToLower() == EN.ToLower())
-                {
-                    rtdTagname = String.Format(Constant.ReserveDefaults.SchedualeTagNames["RTD"], MIN, unitNumber);
-                    hapTagname = String.Format(Constant.ReserveDefaults.SchedualeTagNames["HAP"], MIN, unitNumber);
-                }
-                else
-                {
-                    rtdTagname = String.Format(Constant.ReserveDefaults.SchedualeTagNames["RTD"], commodity, unitNumber);
-                    hapTagname = String.Format(Constant.ReserveDefaults.SchedualeTagNames["HAP"], commodity, unitNumber);
-                }
-            }
-            else
-            {
-                if (commodity.ToLower() == EN.ToLower())
-                {
-                    rtdTagname = String.Format(Constant.ReserveDefaults.PriceTagNames["RTD"], MIN, unitNumber);
-                    hapTagname = String.Format(Constant.ReserveDefaults.PriceTagNames["HAP"], MIN, unitNumber);
-                }
-                else
-                {
-                    rtdTagname = String.Format(Constant.ReserveDefaults.PriceTagNames["RTD"], commodity, unitNumber);
-                    hapTagname = String.Format(Constant.ReserveDefaults.PriceTagNames["HAP"], commodity, unitNumber);
-                }
-                    
-            }
-            actualTagname = String.Format(Constant.ReserveDefaults.SchedualeTagNames["ACTUAL"], unitNumber);
-            int minMod = 5 - ((DateTime.Now.Minute) % 5);
-            DateTime now = DateTime.Now;
+        //public List<ReserveSchedule> GetReserveSchedulePrice(string unitNumber, string commodity, bool isScedule)
+        //{
+        //    string rtdTagname = string.Empty;
+        //    string hapTagname = string.Empty;
+        //    string actualTagname = string.Empty;
 
-            List<ReserveSchedule> reserveSchedules = new List<ReserveSchedule>();
-            PIServers piServers = new PIServers();
-            PIServer piServer = piServers[PIServerName];
+        //    if (isScedule)
+        //    {
+        //        if (commodity.ToLower() == EN.ToLower())
+        //        {
+        //            rtdTagname = String.Format(Constant.ReserveDefaults.SchedualeTagNames["RTD"], MIN, unitNumber);
+        //            hapTagname = String.Format(Constant.ReserveDefaults.SchedualeTagNames["HAP"], MIN, unitNumber);
+        //        }
+        //        else
+        //        {
+        //            rtdTagname = String.Format(Constant.ReserveDefaults.SchedualeTagNames["RTD"], commodity, unitNumber);
+        //            hapTagname = String.Format(Constant.ReserveDefaults.SchedualeTagNames["HAP"], commodity, unitNumber);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (commodity.ToLower() == EN.ToLower())
+        //        {
+        //            rtdTagname = String.Format(Constant.ReserveDefaults.PriceTagNames["RTD"], MIN, unitNumber);
+        //            hapTagname = String.Format(Constant.ReserveDefaults.PriceTagNames["HAP"], MIN, unitNumber);
+        //        }
+        //        else
+        //        {
+        //            rtdTagname = String.Format(Constant.ReserveDefaults.PriceTagNames["RTD"], commodity, unitNumber);
+        //            hapTagname = String.Format(Constant.ReserveDefaults.PriceTagNames["HAP"], commodity, unitNumber);
+        //        }
 
-            PIPoint ptHap = PIPoint.FindPIPoint(piServer, hapTagname);
-            PIPoint ptRtd = PIPoint.FindPIPoint(piServer, rtdTagname);
-            PIPoint ptActual = PIPoint.FindPIPoint(piServer, actualTagname);
-            PIPoint ptRTDPlus10 = PIPoint.FindPIPoint(piServer, rtdTagname);
-            int aheadMin = 5;
-            //plus 10 mins
-            var ptRTDValue10 = ptRTDPlus10.RecordedValue(new AFTime(DateTime.Now.AddMinutes(minMod + 5).ToShortDateString() + " " + DateTime.Now.AddMinutes(minMod + 5).ToString("HH:mm:00")), AFRetrievalMode.Exact);
-            if (ptRTDValue10.Value.ToString() == "No Data" || ptRTDValue10.Value.ToString() == "Pt Created")
-            {
-                aheadMin = 5;
-            }
-            else
-            {
-                aheadMin = 10;
-            }
+        //    }
+        //    actualTagname = String.Format(Constant.ReserveDefaults.SchedualeTagNames["ACTUAL"], unitNumber);
+        //    int minMod = 5 - ((DateTime.Now.Minute) % 5);
+        //    DateTime now = DateTime.Now;
 
-            // HAP Data
-            for (int x = aheadProjMinuteSpan; x >= aheadMin; x = x - 5)
-            {
-                //if there is no selected unit.
-                // default schedule is null
-                if (unitNumber == "")
-                {
-                    reserveSchedules.Add(new ReserveSchedule
-                    {
-                        Tagname = hapTagname,
-                        Schedule = null,
-                        Timestamp = Convert.ToDateTime(now.AddMinutes(x + minMod).ToShortDateString() + " " + now.AddMinutes(x + minMod).ToString("HH:mm:00")),
-                        Interval = now.AddMinutes(x + minMod).ToString("HH:mm")
-                    });
-                }
-                else
-                {
-                    var val = GetPIValue(ptHap, minMod, x, false);
+        //    List<ReserveSchedule> reserveSchedules = new List<ReserveSchedule>();
+        //    PIServers piServers = new PIServers();
+        //    PIServer piServer = piServers[PIServerName];
 
-                    string shortDateString = now.AddMinutes(x + minMod).ToShortDateString();
-                    int interv = now.AddMinutes(x + minMod).Minute == 0 ? now.AddMinutes(x + minMod).Hour : now.AddMinutes(x + minMod).Hour + 1;
-                    Nullable<Double> offer_price = GetSpecificBidOfferPrice(shortDateString, interv, unitNumber, commodity, val);
+        //    PIPoint ptHap = PIPoint.FindPIPoint(piServer, hapTagname);
+        //    PIPoint ptRtd = PIPoint.FindPIPoint(piServer, rtdTagname);
+        //    PIPoint ptActual = PIPoint.FindPIPoint(piServer, actualTagname);
+        //    PIPoint ptRTDPlus10 = PIPoint.FindPIPoint(piServer, rtdTagname);
+        //    int aheadMin = 5;
+        //    //plus 10 mins
+        //    var ptRTDValue10 = ptRTDPlus10.RecordedValue(new AFTime(DateTime.Now.AddMinutes(minMod + 5).ToShortDateString() + " " + DateTime.Now.AddMinutes(minMod + 5).ToString("HH:mm:00")), AFRetrievalMode.Exact);
+        //    if (ptRTDValue10.Value.ToString() == "No Data" || ptRTDValue10.Value.ToString() == "Pt Created")
+        //    {
+        //        aheadMin = 5;
+        //    }
+        //    else
+        //    {
+        //        aheadMin = 10;
+        //    }
 
-                    reserveSchedules.Add(new ReserveSchedule
-                    {
-                        Tagname = hapTagname,
-                        Schedule = val,
-                        OfferPrice = offer_price,
-                        Timestamp = Convert.ToDateTime(now.AddMinutes(x + minMod).ToShortDateString() + " " + now.AddMinutes(x + minMod).ToString("HH:mm:00")),
-                        Interval = now.AddMinutes(x + minMod).ToString("HH:mm")
-                    });
-                }
-            }
+        //    // HAP Data
+        //    for (int x = aheadProjMinuteSpan; x >= aheadMin; x = x - 5)
+        //    {
+        //        //if there is no selected unit.
+        //        // default schedule is null
+        //        if (unitNumber == "")
+        //        {
+        //            reserveSchedules.Add(new ReserveSchedule
+        //            {
+        //                Tagname = hapTagname,
+        //                Schedule = null,
+        //                Timestamp = Convert.ToDateTime(now.AddMinutes(x + minMod).ToShortDateString() + " " + now.AddMinutes(x + minMod).ToString("HH:mm:00")),
+        //                Interval = now.AddMinutes(x + minMod).ToString("HH:mm")
+        //            });
+        //        }
+        //        else
+        //        {
+        //            var val = GetPIValue(ptHap, minMod, x, false);
 
-            if (aheadMin == 10)
-            {
-                var val = Convert.ToDouble(ptRTDValue10.Value);
+        //            string shortDateString = now.AddMinutes(x + minMod).ToShortDateString();
+        //            int interv = now.AddMinutes(x + minMod).Minute == 0 ? now.AddMinutes(x + minMod).Hour : now.AddMinutes(x + minMod).Hour + 1;
+        //            Nullable<Double> offer_price = GetSpecificBidOfferPrice(shortDateString, interv, unitNumber, commodity, val);
 
-                string shortDateString = now.AddMinutes(5 + minMod).ToShortDateString();
-                int interv = now.AddMinutes(5 + minMod).Minute == 0 ? now.AddMinutes(5 + minMod).Hour : now.AddMinutes(5 + minMod).Hour + 1;
-                Nullable<Double> offer_price = GetSpecificBidOfferPrice(shortDateString, interv, unitNumber, commodity, val);
+        //            reserveSchedules.Add(new ReserveSchedule
+        //            {
+        //                Tagname = hapTagname,
+        //                Schedule = val,
+        //                OfferPrice = offer_price,
+        //                Timestamp = Convert.ToDateTime(now.AddMinutes(x + minMod).ToShortDateString() + " " + now.AddMinutes(x + minMod).ToString("HH:mm:00")),
+        //                Interval = now.AddMinutes(x + minMod).ToString("HH:mm")
+        //            });
+        //        }
+        //    }
 
-                reserveSchedules.Add(new ReserveSchedule
-                {
-                    Tagname = rtdTagname,
-                    Schedule = val,
-                    OfferPrice = offer_price,
-                    Timestamp = Convert.ToDateTime(DateTime.Now.AddMinutes(5 + minMod).ToShortDateString() + " " + DateTime.Now.AddMinutes(5 + minMod).ToString("HH:mm:00")),
-                    Interval = DateTime.Now.AddMinutes(5 + minMod).ToString("HH:mm")
-                });
-            }
+        //    if (aheadMin == 10)
+        //    {
+        //        var val = Convert.ToDouble(ptRTDValue10.Value);
+
+        //        string shortDateString = now.AddMinutes(5 + minMod).ToShortDateString();
+        //        int interv = now.AddMinutes(5 + minMod).Minute == 0 ? now.AddMinutes(5 + minMod).Hour : now.AddMinutes(5 + minMod).Hour + 1;
+        //        Nullable<Double> offer_price = GetSpecificBidOfferPrice(shortDateString, interv, unitNumber, commodity, val);
+
+        //        reserveSchedules.Add(new ReserveSchedule
+        //        {
+        //            Tagname = rtdTagname,
+        //            Schedule = val,
+        //            OfferPrice = offer_price,
+        //            Timestamp = Convert.ToDateTime(DateTime.Now.AddMinutes(5 + minMod).ToShortDateString() + " " + DateTime.Now.AddMinutes(5 + minMod).ToString("HH:mm:00")),
+        //            Interval = DateTime.Now.AddMinutes(5 + minMod).ToString("HH:mm")
+        //        });
+        //    }
 
 
-            //Current RTD Data
-            if (unitNumber == "")
-            {
-                //if there is no selected unit.
-                // default schedule is null
-                reserveSchedules.Add(new ReserveSchedule
-                {
-                    Tagname = rtdTagname,
-                    Schedule = null,
-                    Timestamp = Convert.ToDateTime(now.AddMinutes(minMod).ToShortDateString() + " " + now.AddMinutes(minMod).ToString("HH:mm:00")),
-                    Interval = now.AddMinutes(minMod).ToString("HH:mm")
-                });
-            }
-            else
-            {
-                string dataStatus = "R";
-                var val = GetPIValue(ptRtd, minMod, currentInterval, false);
-                if (isScedule)
-                {
-                    if (val == null)
-                    {
-                        val = GetOverrideValue(unitNumber, commodity, out dataStatus);
-                    }
-                    else
-                    {
-                        DisableOverride(unitNumber, commodity);
-                    }
-                }
+        //    //Current RTD Data
+        //    if (unitNumber == "")
+        //    {
+        //        //if there is no selected unit.
+        //        // default schedule is null
+        //        reserveSchedules.Add(new ReserveSchedule
+        //        {
+        //            Tagname = rtdTagname,
+        //            Schedule = null,
+        //            Timestamp = Convert.ToDateTime(now.AddMinutes(minMod).ToShortDateString() + " " + now.AddMinutes(minMod).ToString("HH:mm:00")),
+        //            Interval = now.AddMinutes(minMod).ToString("HH:mm")
+        //        });
+        //    }
+        //    else
+        //    {
+        //        string dataStatus = "R";
+        //        var val = GetPIValue(ptRtd, minMod, currentInterval, false);
+        //        if (isScedule)
+        //        {
+        //            if (val == null)
+        //            {
+        //                val = GetOverrideValue(unitNumber, commodity, out dataStatus);
+        //            }
+        //            else
+        //            {
+        //                DisableOverride(unitNumber, commodity);
+        //            }
+        //        }
 
-                string shortDateString = now.AddMinutes(minMod).ToShortDateString();
-                int interv = now.AddMinutes(minMod).Minute == 0 ? now.AddMinutes(minMod).Hour : now.AddMinutes(minMod).Hour + 1;
-                Nullable<Double> offer_price = GetSpecificBidOfferPrice(shortDateString, interv, unitNumber, commodity, val);
+        //        string shortDateString = now.AddMinutes(minMod).ToShortDateString();
+        //        int interv = now.AddMinutes(minMod).Minute == 0 ? now.AddMinutes(minMod).Hour : now.AddMinutes(minMod).Hour + 1;
+        //        Nullable<Double> offer_price = GetSpecificBidOfferPrice(shortDateString, interv, unitNumber, commodity, val);
 
-                reserveSchedules.Add(new ReserveSchedule
-                {
-                    Tagname = rtdTagname,
-                    Schedule = val,
-                    OfferPrice = offer_price,
-                    Timestamp = Convert.ToDateTime(now.AddMinutes(minMod).ToShortDateString() + " " + now.AddMinutes(minMod).ToString("HH:mm:00")),
-                    Interval = now.AddMinutes(minMod).ToString("HH:mm"),
-                    DataStatus = dataStatus
-                });
-            }
+        //        reserveSchedules.Add(new ReserveSchedule
+        //        {
+        //            Tagname = rtdTagname,
+        //            Schedule = val,
+        //            OfferPrice = offer_price,
+        //            Timestamp = Convert.ToDateTime(now.AddMinutes(minMod).ToShortDateString() + " " + now.AddMinutes(minMod).ToString("HH:mm:00")),
+        //            Interval = now.AddMinutes(minMod).ToString("HH:mm"),
+        //            DataStatus = dataStatus
+        //        });
+        //    }
 
-            // Previous RTD Data
-            minMod = ((DateTime.Now.Minute) % 5);
-            for (int x = 0; x <= previousMinuteSpan; x = x + 5)
-            {
-                if (unitNumber == "")
-                {
-                    //if there is no selected unit.
-                    // default schedule is null
-                    reserveSchedules.Add(new ReserveSchedule
-                    {
-                        Tagname = rtdTagname,
-                        Schedule = null,
-                        Timestamp = Convert.ToDateTime(now.AddMinutes(-(minMod + x)).ToShortDateString() + " " + now.AddMinutes(-(minMod + x)).ToString("HH:mm:00")),
-                        Interval = now.AddMinutes(-(minMod + x)).ToString("HH:mm"),
-                    });
-                }
-                else
-                {
-                    var val = GetPIValue(ptRtd, minMod, x, true);
-                    var actual = GetPIValue(ptActual, minMod, x, true);
+        //    // Previous RTD Data
+        //    minMod = ((DateTime.Now.Minute) % 5);
+        //    for (int x = 0; x <= previousMinuteSpan; x = x + 5)
+        //    {
+        //        if (unitNumber == "")
+        //        {
+        //            //if there is no selected unit.
+        //            // default schedule is null
+        //            reserveSchedules.Add(new ReserveSchedule
+        //            {
+        //                Tagname = rtdTagname,
+        //                Schedule = null,
+        //                Timestamp = Convert.ToDateTime(now.AddMinutes(-(minMod + x)).ToShortDateString() + " " + now.AddMinutes(-(minMod + x)).ToString("HH:mm:00")),
+        //                Interval = now.AddMinutes(-(minMod + x)).ToString("HH:mm"),
+        //            });
+        //        }
+        //        else
+        //        {
+        //            var val = GetPIValue(ptRtd, minMod, x, true);
+        //            var actual = GetPIValue(ptActual, minMod, x, true);
 
-                    string shortDateString = now.AddMinutes(-(minMod + x)).ToShortDateString();
-                    int interv = now.AddMinutes(-(minMod + x)).Minute == 0 ? now.AddMinutes(-(minMod + x)).Hour : now.AddMinutes(-(minMod + x)).Hour + 1;
-                    Nullable<Double> offer_price = GetSpecificBidOfferPrice(shortDateString, interv, unitNumber, commodity, val);
+        //            string shortDateString = now.AddMinutes(-(minMod + x)).ToShortDateString();
+        //            int interv = now.AddMinutes(-(minMod + x)).Minute == 0 ? now.AddMinutes(-(minMod + x)).Hour : now.AddMinutes(-(minMod + x)).Hour + 1;
+        //            Nullable<Double> offer_price = GetSpecificBidOfferPrice(shortDateString, interv, unitNumber, commodity, val);
 
-                    reserveSchedules.Add(new ReserveSchedule
-                    {
-                        Tagname = rtdTagname,
-                        Schedule = val,
-                        Actual = actual,
-                        OfferPrice = offer_price,
-                        Timestamp = Convert.ToDateTime(now.AddMinutes(-(minMod + x)).ToShortDateString() + " " + now.AddMinutes(-(minMod + x)).ToString("HH:mm:00")),
-                        Interval = now.AddMinutes(-(minMod + x)).ToString("HH:mm")
-                    });
-                }
-            }
+        //            reserveSchedules.Add(new ReserveSchedule
+        //            {
+        //                Tagname = rtdTagname,
+        //                Schedule = val,
+        //                Actual = actual,
+        //                OfferPrice = offer_price,
+        //                Timestamp = Convert.ToDateTime(now.AddMinutes(-(minMod + x)).ToShortDateString() + " " + now.AddMinutes(-(minMod + x)).ToString("HH:mm:00")),
+        //                Interval = now.AddMinutes(-(minMod + x)).ToString("HH:mm")
+        //            });
+        //        }
+        //    }
 
-            return reserveSchedules;
-        }
-
+        //    return reserveSchedules;
+        //}
         //public Nullable<Double> GetSpecificBidOfferPrice(string shortDateString, int interv, string unitNumber, string commodity, Nullable<Double> val)
         //{
         //    Nullable<Double> offer_price = null;
@@ -313,59 +312,299 @@ namespace New_Trading_API.Services
         //    return offer_price;
         //}
 
-
-        public Nullable<double> GetSpecificBidOfferPrice(string shortDateString,int interv,string unitNumber,string commodity,Nullable<double> val)
+        public List<ReserveSchedule> GetReserveSchedulePrice(string unitNumber, string commodity, bool isScedule)
         {
-            Nullable<double> offer_price = null;
+            string rtdTagname = string.Empty;
+            string hapTagname = string.Empty;
+            string actualTagname = string.Empty;
 
-            DateTime now = DateTime.Now;
-
-            // ======================================================
-            // STEP 0: CURRENT BASE 5-MIN ALIGNMENT
-            // ======================================================
-            DateTime currentInterval = new DateTime(
-                now.Year,
-                now.Month,
-                now.Day,
-                now.Hour,
-                (now.Minute / 5) * 5,
-                0
-            );
-
-            int offset = interv - 6;
-
-            DateTime intervalTime = currentInterval.AddMinutes(offset * 5);
-
-            // ======================================================
-            // STEP 1: DELAYED COLUMN (+15 mins RTD preview)
-            // ======================================================
-            DateTime delayedTime = now.AddMinutes(15);
-
-            delayedTime = new DateTime(
-                delayedTime.Year,
-                delayedTime.Month,
-                delayedTime.Day,
-                delayedTime.Hour,
-                (delayedTime.Minute / 5) * 5,
-                0
-            );
-
-            // ======================================================
-            // STEP 2: FINAL TIME SELECTION
-            // ======================================================
-            DateTime finalTime;
-
-            if (interv == 5)
+            if (isScedule)
             {
-                finalTime = delayedTime;
+                if (commodity.ToLower() == EN.ToLower())
+                {
+                    rtdTagname = String.Format(Constant.ReserveDefaults.SchedualeTagNames["RTD"], MIN, unitNumber);
+                    hapTagname = String.Format(Constant.ReserveDefaults.SchedualeTagNames["HAP"], MIN, unitNumber);
+                }
+                else
+                {
+                    rtdTagname = String.Format(Constant.ReserveDefaults.SchedualeTagNames["RTD"], commodity, unitNumber);
+                    hapTagname = String.Format(Constant.ReserveDefaults.SchedualeTagNames["HAP"], commodity, unitNumber);
+                }
             }
             else
             {
-                finalTime = intervalTime;
+                if (commodity.ToLower() == EN.ToLower())
+                {
+                    rtdTagname = String.Format(Constant.ReserveDefaults.PriceTagNames["RTD"], MIN, unitNumber);
+                    hapTagname = String.Format(Constant.ReserveDefaults.PriceTagNames["HAP"], MIN, unitNumber);
+                }
+                else
+                {
+                    rtdTagname = String.Format(Constant.ReserveDefaults.PriceTagNames["RTD"], commodity, unitNumber);
+                    hapTagname = String.Format(Constant.ReserveDefaults.PriceTagNames["HAP"], commodity, unitNumber);
+                }
+            }
+
+            actualTagname = String.Format(Constant.ReserveDefaults.SchedualeTagNames["ACTUAL"], unitNumber);
+
+            DateTime snapshotNow = DateTime.Now;
+
+            DateTime now = new DateTime(
+                snapshotNow.Year,
+                snapshotNow.Month,
+                snapshotNow.Day,
+                snapshotNow.Hour,
+                snapshotNow.Minute,
+                snapshotNow.Second
+            );
+
+            int minMod = 5 - (now.Minute % 5);
+
+            List<ReserveSchedule> reserveSchedules = new List<ReserveSchedule>();
+
+            PIServers piServers = new PIServers();
+            PIServer piServer = piServers[PIServerName];
+
+            PIPoint ptHap = PIPoint.FindPIPoint(piServer, hapTagname);
+            PIPoint ptRtd = PIPoint.FindPIPoint(piServer, rtdTagname);
+            PIPoint ptActual = PIPoint.FindPIPoint(piServer, actualTagname);
+            PIPoint ptRTDPlus10 = PIPoint.FindPIPoint(piServer, rtdTagname);
+
+            int aheadMin = 5;
+
+            var ptRTDValue10 = ptRTDPlus10.RecordedValue(
+                new AFTime(snapshotNow.AddMinutes(minMod + 5).ToShortDateString() + " " +
+                snapshotNow.AddMinutes(minMod + 5).ToString("HH:mm:00")),
+                AFRetrievalMode.Exact);
+
+            if (ptRTDValue10.Value.ToString() == "No Data" || ptRTDValue10.Value.ToString() == "Pt Created")
+                aheadMin = 5;
+            else
+                aheadMin = 10;
+
+            // =========================
+            // HAP DATA
+            // =========================
+            for (int x = aheadProjMinuteSpan; x >= aheadMin; x -= 5)
+            {
+                DateTime rowTime = now.AddMinutes(x + minMod);
+
+                if (unitNumber == "")
+                {
+                    reserveSchedules.Add(new ReserveSchedule
+                    {
+                        Tagname = hapTagname,
+                        Schedule = null,
+                        OfferPrice = null,
+                        Timestamp = rowTime,
+                        Interval = rowTime.ToString("HH:mm")
+                    });
+                }
+                else
+                {
+                    var val = GetPIValue(ptHap, minMod, x, false);
+
+                    string shortDateString = rowTime.ToShortDateString();
+
+                    Nullable<double> offer_price = GetSpecificBidOfferPrice(
+                        shortDateString,
+                        unitNumber,
+                        commodity,
+                        val,
+                        rowTime
+                    );
+
+                    reserveSchedules.Add(new ReserveSchedule
+                    {
+                        Tagname = hapTagname,
+                        Schedule = val,
+                        OfferPrice = offer_price,
+                        Timestamp = rowTime,
+                        Interval = rowTime.ToString("HH:mm")
+                    });
+                }
+            }
+
+            // =========================
+            // RTD +10
+            // =========================
+            if (aheadMin == 10)
+            {
+                var val = Convert.ToDouble(ptRTDValue10.Value);
+
+                DateTime rowTime = snapshotNow.AddMinutes(5 + minMod);
+
+                Nullable<double> offer_price = GetSpecificBidOfferPrice(
+                    rowTime.ToShortDateString(),
+                    unitNumber,
+                    commodity,
+                    val,
+                    rowTime
+                );
+
+                reserveSchedules.Add(new ReserveSchedule
+                {
+                    Tagname = rtdTagname,
+                    Schedule = val,
+                    OfferPrice = offer_price,
+                    Timestamp = rowTime,
+                    Interval = rowTime.ToString("HH:mm")
+                });
+            }
+
+            // =========================
+            // CURRENT RTD
+            // =========================
+            if (unitNumber == "")
+            {
+                DateTime rowTime = now.AddMinutes(minMod);
+
+                reserveSchedules.Add(new ReserveSchedule
+                {
+                    Tagname = rtdTagname,
+                    Schedule = null,
+                    Timestamp = rowTime,
+                    Interval = rowTime.ToString("HH:mm")
+                });
+            }
+            else
+            {
+                string dataStatus = "R";
+                var val = GetPIValue(ptRtd, minMod, currentInterval, false);
+
+                if (isScedule)
+                {
+                    if (val == null)
+                    {
+                        val = GetOverrideValue(unitNumber, commodity, out dataStatus);
+                    }
+                    else
+                    {
+                        DisableOverride(unitNumber, commodity);
+                    }
+                }
+
+                DateTime rowTime = now.AddMinutes(minMod);
+
+                Nullable<double> offer_price = GetSpecificBidOfferPrice(
+                    rowTime.ToShortDateString(),
+                    unitNumber,
+                    commodity,
+                    val,
+                    rowTime
+                );
+
+                reserveSchedules.Add(new ReserveSchedule
+                {
+                    Tagname = rtdTagname,
+                    Schedule = val,
+                    OfferPrice = offer_price,
+                    Timestamp = rowTime,
+                    Interval = rowTime.ToString("HH:mm"),
+                    DataStatus = dataStatus
+                });
+            }
+
+            // =========================
+            // PREVIOUS RTD
+            // =========================
+            minMod = ((snapshotNow.Minute) % 5);
+
+            for (int x = 0; x <= previousMinuteSpan; x += 5)
+            {
+                DateTime rowTime = now.AddMinutes(-(minMod + x));
+
+                if (unitNumber == "")
+                {
+                    reserveSchedules.Add(new ReserveSchedule
+                    {
+                        Tagname = rtdTagname,
+                        Schedule = null,
+                        Timestamp = rowTime,
+                        Interval = rowTime.ToString("HH:mm")
+                    });
+                }
+                else
+                {
+                    var val = GetPIValue(ptRtd, minMod, x, true);
+                    var actual = GetPIValue(ptActual, minMod, x, true);
+
+                    Nullable<double> offer_price = GetSpecificBidOfferPrice(
+                        rowTime.ToShortDateString(),
+                        unitNumber,
+                        commodity,
+                        val,
+                        rowTime
+                    );
+
+                    reserveSchedules.Add(new ReserveSchedule
+                    {
+                        Tagname = rtdTagname,
+                        Schedule = val,
+                        Actual = actual,
+                        OfferPrice = offer_price,
+                        Timestamp = rowTime,
+                        Interval = rowTime.ToString("HH:mm")
+                    });
+                }
+            }
+
+            return reserveSchedules;
+        }
+        public Nullable<double> GetSpecificBidOfferPrice(string shortDateString, string unitNumber, string commodity, Nullable<double> val, DateTime rowTime) // ✅ single source of truth)
+        {
+            Nullable<double> offer_price = null;
+
+            // ======================================================
+            // STEP 1: ALIGN TIME (ONLY USE rowTime)
+            // 🔥 Treat :00 as previous bucket (14:05–15:00 behavior)
+            // ======================================================
+
+            DateTime adjustedRowTime = rowTime;
+
+            // If exactly HH:00, use previous 5-minute bucket
+            if (rowTime.Minute == 0)
+            {
+                adjustedRowTime = rowTime.AddMinutes(-5);
+            }
+
+            DateTime finalTime = new DateTime(
+                adjustedRowTime.Year,
+                adjustedRowTime.Month,
+                adjustedRowTime.Day,
+                adjustedRowTime.Hour,
+                (adjustedRowTime.Minute / 5) * 5,
+                0
+            );
+
+            // ======================================================
+            // STEP 2: DELAY LOGIC (+15 min preview)
+            // ======================================================
+
+            DateTime delayedBase = adjustedRowTime.AddMinutes(15);
+
+            DateTime delayedTime = new DateTime(
+                delayedBase.Year,
+                delayedBase.Month,
+                delayedBase.Day,
+                delayedBase.Hour,
+                (delayedBase.Minute / 5) * 5,
+                0
+            );
+
+            // ======================================================
+            // STEP 3: FINAL TIME DECISION
+            // (only special rule for future preview slot)
+            // ======================================================
+            DateTime useTime = finalTime;
+
+            if (adjustedRowTime > DateTime.Now.AddMinutes(10))
+            {
+                useTime = delayedTime;
             }
 
             // ======================================================
-            // STEP 3: PI CONNECTION
+            // STEP 4: PI CONNECTION
             // ======================================================
             PIServers piServers = new PIServers();
             PIServer piServer = piServers[PIServerName];
@@ -381,7 +620,7 @@ namespace New_Trading_API.Services
                     var pt = PIPoint.FindPIPoint(piServer, tag(suffix));
                     if (pt == null) return null;
 
-                    return GetPIValue2(pt, finalTime.ToString());
+                    return GetPIValue2(pt, useTime.ToString());
                 }
                 catch
                 {
@@ -390,7 +629,7 @@ namespace New_Trading_API.Services
             };
 
             // ======================================================
-            // STEP 4: FETCH PI CURVE (P/Q)
+            // STEP 5: FETCH CURVE
             // ======================================================
             double? p1 = getVal("P1");
             double? p2 = getVal("P2");
@@ -405,7 +644,7 @@ namespace New_Trading_API.Services
             double? q5 = getVal("Q5");
 
             // ======================================================
-            // STEP 5: VALIDATION
+            // STEP 6: VALIDATION
             // ======================================================
             if (!val.HasValue)
                 return null;
@@ -414,7 +653,7 @@ namespace New_Trading_API.Services
                 return null;
 
             // ======================================================
-            // STEP 6: PI TIER EVALUATION (FIXED LOGIC)
+            // STEP 7: TIER LOGIC (UNCHANGED)
             // ======================================================
             if (commodity.ToLower() == RU.ToLower() || commodity.ToLower() == RD.ToLower())
             {
@@ -428,6 +667,7 @@ namespace New_Trading_API.Services
 
             return offer_price;
         }
+
 
         public List<ReserveSchedule> GetReserveOfferPrice(string unitNumber, string commodity)
         {

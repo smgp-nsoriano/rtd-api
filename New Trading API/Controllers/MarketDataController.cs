@@ -29,13 +29,14 @@ using System.Threading.Tasks;
 using System.Web.Configuration;
 using New_Trading_API.Constant;
 using System.Security.Claims;
+using Org.BouncyCastle.Crypto.Tls;
 
 namespace New_Trading_API.Controllers
 {
     public class MarketDataController : ApiController
     {
         const int AHCSiteID = 1009;
-
+        private string PIServerName = GlobalFunctions.piServerName;
         #region Main
         [HttpGet]
         [Authorize]
@@ -413,7 +414,7 @@ namespace New_Trading_API.Controllers
             Unit unit = new Unit();
             Nullable<Double> rtd = null;
             Nullable<Double> eap = null;
-            int minMod = 0;
+            int minMod = 0; 
             PIServers piServers = new PIServers();
             PIServer piServer = piServers[GlobalFunctions.piServerName];
 
@@ -2539,67 +2540,208 @@ namespace New_Trading_API.Controllers
             return bid;
         }
 
+        //public List<Bid> SaveOffers(List<Bid> bids, string UnitNumber)
+        //{
+        //    List<Bid> offers = new List<Bid>();
+        //    Bid bid = bids.FirstOrDefault();
+        //    DateTime dateSched = bid.Date;
+
+        //    using (TradingEntities db = new TradingEntities())
+        //    {
+        //        string query = "";
+        //        query = $@"delete from t_BidOffer where UnitNumber = '{UnitNumber}' and DateSchedule = '{dateSched}'";
+        //        db.Database.ExecuteSqlCommand(query);
+
+        //        foreach (var item in bids)
+        //        {
+        //            query = $@"insert into t_BidOffer
+        //                        ([UnitNumber],[DateSchedule],[Interval],
+        //                        [P1],[P2],[P3],[P4],[P5],[P6],[P7],[P8],
+        //                        [P9],[P10],[P11],[Q1],[Q2],[Q3],[Q4],[Q5],
+        //                        [Q6],[Q7],[Q8],[Q9],[Q10],[Q11],
+        //                        [AS_RU_Q1],[AS_RU_Q2],[AS_RU_Q3],[AS_RU_Q4],[AS_RU_Q5],
+        //                        [AS_RU_P1],[AS_RU_P2],[AS_RU_P3],[AS_RU_P4],[AS_RU_P5],
+        //                        [AS_RD_Q1],[AS_RD_Q2],[AS_RD_Q3],[AS_RD_Q4],[AS_RD_Q5],
+        //                        [AS_RD_P1],[AS_RD_P2],[AS_RD_P3],[AS_RD_P4],[AS_RD_P5],
+        //                        [AS_FR_Q1],[AS_FR_Q2],[AS_FR_Q3],[AS_FR_Q4],[AS_FR_Q5],
+        //                        [AS_FR_P1],[AS_FR_P2],[AS_FR_P3],[AS_FR_P4],[AS_FR_P5],
+        //                        [AS_DR_Q1],[AS_DR_Q2],[AS_DR_Q3],[AS_DR_Q4],[AS_DR_Q5],
+        //                        [AS_DR_P1],[AS_DR_P2],[AS_DR_P3],[AS_DR_P4],[AS_DR_P5],ControlMode)
+
+        //                        values('{UnitNumber}','{dateSched}',{item.Interval},
+        //                        {BidValue(item.P1)},{BidValue(item.P2)},{BidValue(item.P3)},{BidValue(item.P4)},{BidValue(item.P5)},{BidValue(item.P6)},
+        //                        {BidValue(item.P7)},{BidValue(item.P8)},{BidValue(item.P9)},{BidValue(item.P10)},{BidValue(item.P11)},
+        //                        {BidValue(item.Q1)},{BidValue(item.Q2)},{BidValue(item.Q3)},{BidValue(item.Q4)},{BidValue(item.Q5)},{BidValue(item.Q6)},
+        //                        {BidValue(item.Q7)},{BidValue(item.Q8)},{BidValue(item.Q9)},{BidValue(item.Q10)},{BidValue(item.Q11)},
+        //                        {BidValue(item.AS_RU_Q1)},{BidValue(item.AS_RU_Q2)},{BidValue(item.AS_RU_Q3)},{BidValue(item.AS_RU_Q4)},{BidValue(item.AS_RU_Q5)},
+        //                        {BidValue(item.AS_RU_P1)},{BidValue(item.AS_RU_P2)},{BidValue(item.AS_RU_P3)},{BidValue(item.AS_RU_P4)},{BidValue(item.AS_RU_P5)},
+        //                        {BidValue(item.AS_RD_Q1)},{BidValue(item.AS_RD_Q2)},{BidValue(item.AS_RD_Q3)},{BidValue(item.AS_RD_Q4)},{BidValue(item.AS_RD_Q5)},
+        //                        {BidValue(item.AS_RD_P1)},{BidValue(item.AS_RD_P2)},{BidValue(item.AS_RD_P3)},{BidValue(item.AS_RD_P4)},{BidValue(item.AS_RD_P5)},
+        //                        {BidValue(item.AS_FR_Q1)},{BidValue(item.AS_FR_Q2)},{BidValue(item.AS_FR_Q3)},{BidValue(item.AS_FR_Q4)},{BidValue(item.AS_FR_Q5)},
+        //                        {BidValue(item.AS_FR_P1)},{BidValue(item.AS_FR_P2)},{BidValue(item.AS_FR_P3)},{BidValue(item.AS_FR_P4)},{BidValue(item.AS_FR_P5)},
+        //                        {BidValue(item.AS_DR_Q1)},{BidValue(item.AS_DR_Q2)},{BidValue(item.AS_DR_Q3)},{BidValue(item.AS_DR_Q4)},{BidValue(item.AS_DR_Q5)},
+        //                        {BidValue(item.AS_DR_P1)},{BidValue(item.AS_DR_P2)},{BidValue(item.AS_DR_P3)},{BidValue(item.AS_DR_P4)},{BidValue(item.AS_DR_P5)},'{item.ControlMode}')";
+        //            db.Database.ExecuteSqlCommand(query);
+        //        }
+
+        //        query = $@"exec [sp_InsertRampRate] '{UnitNumber}','{dateSched}',
+        //                  {BidValue(bid.RampQuantity1)},{BidValue(bid.RampQuantity2)},{BidValue(bid.RampQuantity3)},{BidValue(bid.RampQuantity4)},{BidValue(bid.RampQuantity5)},
+        //                  {BidValue(bid.RRU1)},{BidValue(bid.RRU2)},{BidValue(bid.RRU3)},{BidValue(bid.RRU4)},{BidValue(bid.RRU5)},
+        //                  {BidValue(bid.RRD1)},{BidValue(bid.RRD2)},{BidValue(bid.RRD3)},{BidValue(bid.RRD4)},{BidValue(bid.RRD5)}";
+        //        db.Database.ExecuteSqlCommand(query);
+
+        //        offers = GetOffers(UnitNumber, dateSched);
+        //    }
+
+        //    GlobalFunctions.Log(logType: "UPDATE_BID_OFFER",
+        //                    action: "Update Bid Offer Success",
+        //                    message: $"Bid offer successfully updated. UnitNumber: {UnitNumber}, Schedule:{dateSched} ",
+        //                    newValues: JsonConvert.SerializeObject(bids),
+        //                    userName: GetUsername());
+
+        //    return offers;
+        //}
+
         public List<Bid> SaveOffers(List<Bid> bids, string UnitNumber)
         {
             List<Bid> offers = new List<Bid>();
+
             Bid bid = bids.FirstOrDefault();
             DateTime dateSched = bid.Date;
+
+            DateTime now = DateTime.Now;
+
+            PIServers piServers = new PIServers();
+            PIServer piServer = piServers[PIServerName];
+
+            DateTime effectiveTime = now.AddMinutes(15);
 
             using (TradingEntities db = new TradingEntities())
             {
                 string query = "";
-                query = $@"delete from t_BidOffer where UnitNumber = '{UnitNumber}' and DateSchedule = '{dateSched}'";
+
+                // DELETE existing records
+                query = $@"DELETE FROM t_BidOffer WHERE UnitNumber = '{UnitNumber}' AND DateSchedule = '{dateSched}'";
                 db.Database.ExecuteSqlCommand(query);
+
+                // Round to next 5-minute interval
+                int remainder = effectiveTime.Minute % 5;
+                if (remainder != 0)
+                {
+                    effectiveTime = effectiveTime.AddMinutes(5 - remainder);
+                }
+
+                effectiveTime = new DateTime(
+                    effectiveTime.Year,
+                    effectiveTime.Month,
+                    effectiveTime.Day,
+                    effectiveTime.Hour,
+                    effectiveTime.Minute,
+                    0
+                );
 
                 foreach (var item in bids)
                 {
-                    query = $@"insert into t_BidOffer
-                                ([UnitNumber],[DateSchedule],[Interval],
-                                [P1],[P2],[P3],[P4],[P5],[P6],[P7],[P8],
-                                [P9],[P10],[P11],[Q1],[Q2],[Q3],[Q4],[Q5],
-                                [Q6],[Q7],[Q8],[Q9],[Q10],[Q11],
-                                [AS_RU_Q1],[AS_RU_Q2],[AS_RU_Q3],[AS_RU_Q4],[AS_RU_Q5],
-                                [AS_RU_P1],[AS_RU_P2],[AS_RU_P3],[AS_RU_P4],[AS_RU_P5],
-                                [AS_RD_Q1],[AS_RD_Q2],[AS_RD_Q3],[AS_RD_Q4],[AS_RD_Q5],
-                                [AS_RD_P1],[AS_RD_P2],[AS_RD_P3],[AS_RD_P4],[AS_RD_P5],
-                                [AS_FR_Q1],[AS_FR_Q2],[AS_FR_Q3],[AS_FR_Q4],[AS_FR_Q5],
-                                [AS_FR_P1],[AS_FR_P2],[AS_FR_P3],[AS_FR_P4],[AS_FR_P5],
-                                [AS_DR_Q1],[AS_DR_Q2],[AS_DR_Q3],[AS_DR_Q4],[AS_DR_Q5],
-                                [AS_DR_P1],[AS_DR_P2],[AS_DR_P3],[AS_DR_P4],[AS_DR_P5],ControlMode)
+                    DateTime hourStart = dateSched.AddHours(item.Interval);
 
-                                values('{UnitNumber}','{dateSched}',{item.Interval},
-                                {BidValue(item.P1)},{BidValue(item.P2)},{BidValue(item.P3)},{BidValue(item.P4)},{BidValue(item.P5)},{BidValue(item.P6)},
-                                {BidValue(item.P7)},{BidValue(item.P8)},{BidValue(item.P9)},{BidValue(item.P10)},{BidValue(item.P11)},
-                                {BidValue(item.Q1)},{BidValue(item.Q2)},{BidValue(item.Q3)},{BidValue(item.Q4)},{BidValue(item.Q5)},{BidValue(item.Q6)},
-                                {BidValue(item.Q7)},{BidValue(item.Q8)},{BidValue(item.Q9)},{BidValue(item.Q10)},{BidValue(item.Q11)},
-                                {BidValue(item.AS_RU_Q1)},{BidValue(item.AS_RU_Q2)},{BidValue(item.AS_RU_Q3)},{BidValue(item.AS_RU_Q4)},{BidValue(item.AS_RU_Q5)},
-                                {BidValue(item.AS_RU_P1)},{BidValue(item.AS_RU_P2)},{BidValue(item.AS_RU_P3)},{BidValue(item.AS_RU_P4)},{BidValue(item.AS_RU_P5)},
-                                {BidValue(item.AS_RD_Q1)},{BidValue(item.AS_RD_Q2)},{BidValue(item.AS_RD_Q3)},{BidValue(item.AS_RD_Q4)},{BidValue(item.AS_RD_Q5)},
-                                {BidValue(item.AS_RD_P1)},{BidValue(item.AS_RD_P2)},{BidValue(item.AS_RD_P3)},{BidValue(item.AS_RD_P4)},{BidValue(item.AS_RD_P5)},
-                                {BidValue(item.AS_FR_Q1)},{BidValue(item.AS_FR_Q2)},{BidValue(item.AS_FR_Q3)},{BidValue(item.AS_FR_Q4)},{BidValue(item.AS_FR_Q5)},
-                                {BidValue(item.AS_FR_P1)},{BidValue(item.AS_FR_P2)},{BidValue(item.AS_FR_P3)},{BidValue(item.AS_FR_P4)},{BidValue(item.AS_FR_P5)},
-                                {BidValue(item.AS_DR_Q1)},{BidValue(item.AS_DR_Q2)},{BidValue(item.AS_DR_Q3)},{BidValue(item.AS_DR_Q4)},{BidValue(item.AS_DR_Q5)},
-                                {BidValue(item.AS_DR_P1)},{BidValue(item.AS_DR_P2)},{BidValue(item.AS_DR_P3)},{BidValue(item.AS_DR_P4)},{BidValue(item.AS_DR_P5)},'{item.ControlMode}')";
+                    // =========================
+                    // ONE-LINE INSERT QUERY
+                    // =========================
+                    query = $@"INSERT INTO t_BidOffer ([UnitNumber],
+                        [DateSchedule],
+                        [Interval],[P1],[P2],[P3],[P4],[P5],[P6],[P7],[P8],[P9],[P10],[P11],
+                        [Q1],[Q2],[Q3],[Q4],[Q5],[Q6],[Q7],[Q8],[Q9],[Q10],[Q11],[AS_RU_Q1],
+                        [AS_RU_Q2],[AS_RU_Q3],[AS_RU_Q4],[AS_RU_Q5],[AS_RU_P1],[AS_RU_P2],
+                        [AS_RU_P3],[AS_RU_P4],[AS_RU_P5],[AS_RD_Q1],[AS_RD_Q2],[AS_RD_Q3],
+                        [AS_RD_Q4],[AS_RD_Q5],[AS_RD_P1],[AS_RD_P2],[AS_RD_P3],[AS_RD_P4],
+                        [AS_RD_P5],[AS_FR_Q1],[AS_FR_Q2],[AS_FR_Q3],[AS_FR_Q4],[AS_FR_Q5],
+                        [AS_FR_P1],[AS_FR_P2],[AS_FR_P3],[AS_FR_P4],[AS_FR_P5],[AS_DR_Q1],
+                        [AS_DR_Q2],[AS_DR_Q3],[AS_DR_Q4],[AS_DR_Q5],[AS_DR_P1],[AS_DR_P2],
+                        [AS_DR_P3],[AS_DR_P4],[AS_DR_P5],ControlMode) 
+                        VALUES('{UnitNumber}','{dateSched}',{item.Interval},
+                        {BidValue(item.P1)},{BidValue(item.P2)},{BidValue(item.P3)},{BidValue(item.P4)},
+                        {BidValue(item.P5)},{BidValue(item.P6)},{BidValue(item.P7)},{BidValue(item.P8)},
+                        {BidValue(item.P9)},{BidValue(item.P10)},{BidValue(item.P11)},{BidValue(item.Q1)},
+                        {BidValue(item.Q2)},{BidValue(item.Q3)},{BidValue(item.Q4)},{BidValue(item.Q5)},
+                        {BidValue(item.Q6)},{BidValue(item.Q7)},{BidValue(item.Q8)},{BidValue(item.Q9)},
+                        {BidValue(item.Q10)},{BidValue(item.Q11)},{BidValue(item.AS_RU_Q1)},{BidValue(item.AS_RU_Q2)},
+                        {BidValue(item.AS_RU_Q3)},{BidValue(item.AS_RU_Q4)},{BidValue(item.AS_RU_Q5)},
+                        {BidValue(item.AS_RU_P1)},{BidValue(item.AS_RU_P2)},{BidValue(item.AS_RU_P3)},
+                        {BidValue(item.AS_RU_P4)},{BidValue(item.AS_RU_P5)},{BidValue(item.AS_RD_Q1)},
+                        {BidValue(item.AS_RD_Q2)},{BidValue(item.AS_RD_Q3)},{BidValue(item.AS_RD_Q4)},
+                        {BidValue(item.AS_RD_Q5)},{BidValue(item.AS_RD_P1)},{BidValue(item.AS_RD_P2)},
+                        {BidValue(item.AS_RD_P3)},{BidValue(item.AS_RD_P4)},{BidValue(item.AS_RD_P5)},
+                        {BidValue(item.AS_FR_Q1)},{BidValue(item.AS_FR_Q2)},{BidValue(item.AS_FR_Q3)},
+                        {BidValue(item.AS_FR_Q4)},{BidValue(item.AS_FR_Q5)},{BidValue(item.AS_FR_P1)},
+                        {BidValue(item.AS_FR_P2)},{BidValue(item.AS_FR_P3)},{BidValue(item.AS_FR_P4)},
+                        {BidValue(item.AS_FR_P5)},{BidValue(item.AS_DR_Q1)},{BidValue(item.AS_DR_Q2)},
+                        {BidValue(item.AS_DR_Q3)},{BidValue(item.AS_DR_Q4)},{BidValue(item.AS_DR_Q5)},
+                        {BidValue(item.AS_DR_P1)},{BidValue(item.AS_DR_P2)},{BidValue(item.AS_DR_P3)},
+                        {BidValue(item.AS_DR_P4)},{BidValue(item.AS_DR_P5)},'{item.ControlMode}')";
+
                     db.Database.ExecuteSqlCommand(query);
+
+                    // =========================
+                    // PI TAG WRITING
+                    // =========================
+                    var tagMap = new Dictionary<string, double?>()
+            {
+                { $"BID_RU_{UnitNumber}_Q1", item.AS_RU_Q1 }, { $"BID_RU_{UnitNumber}_Q2", item.AS_RU_Q2 }, { $"BID_RU_{UnitNumber}_Q3", item.AS_RU_Q3 }, { $"BID_RU_{UnitNumber}_Q4", item.AS_RU_Q4 }, { $"BID_RU_{UnitNumber}_Q5", item.AS_RU_Q5 },
+                { $"BID_RU_{UnitNumber}_P1", item.AS_RU_P1 }, { $"BID_RU_{UnitNumber}_P2", item.AS_RU_P2 }, { $"BID_RU_{UnitNumber}_P3", item.AS_RU_P3 }, { $"BID_RU_{UnitNumber}_P4", item.AS_RU_P4 }, { $"BID_RU_{UnitNumber}_P5", item.AS_RU_P5 },
+                { $"BID_RD_{UnitNumber}_Q1", item.AS_RD_Q1 }, { $"BID_RD_{UnitNumber}_Q2", item.AS_RD_Q2 }, { $"BID_RD_{UnitNumber}_Q3", item.AS_RD_Q3 }, { $"BID_RD_{UnitNumber}_Q4", item.AS_RD_Q4 }, { $"BID_RD_{UnitNumber}_Q5", item.AS_RD_Q5 },
+                { $"BID_RD_{UnitNumber}_P1", item.AS_RD_P1 }, { $"BID_RD_{UnitNumber}_P2", item.AS_RD_P2 }, { $"BID_RD_{UnitNumber}_P3", item.AS_RD_P3 }, { $"BID_RD_{UnitNumber}_P4", item.AS_RD_P4 }, { $"BID_RD_{UnitNumber}_P5", item.AS_RD_P5 }
+            };
+
+                    foreach (var kvp in tagMap)
+                    {
+                        try
+                        {
+                            PIPoint point = PIPoint.FindPIPoint(piServer, kvp.Key);
+
+                            AFValue lastValue = point.RecordedValue(AFTime.Now, AFRetrievalMode.Before);
+                            bool hasExistingData = lastValue != null && lastValue.Value != null;
+
+                            for (int i = 0; i < 12; i++)
+                            {
+                                DateTime currentTsLocal = hourStart.AddMinutes(5 * i);
+
+                                if (hasExistingData && currentTsLocal < effectiveTime)
+                                    continue;
+
+                                if (kvp.Value != null)
+                                {
+                                    DateTime ts = currentTsLocal.ToUniversalTime();
+                                    AFValue value = new AFValue(kvp.Value.Value, ts);
+                                    point.UpdateValue(value, AFUpdateOption.Replace);
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Failed to write PI tag {kvp.Key}: {ex.Message}");
+                        }
+                    }
                 }
 
-                query = $@"exec [sp_InsertRampRate] '{UnitNumber}','{dateSched}',
-                          {BidValue(bid.RampQuantity1)},{BidValue(bid.RampQuantity2)},{BidValue(bid.RampQuantity3)},{BidValue(bid.RampQuantity4)},{BidValue(bid.RampQuantity5)},
-                          {BidValue(bid.RRU1)},{BidValue(bid.RRU2)},{BidValue(bid.RRU3)},{BidValue(bid.RRU4)},{BidValue(bid.RRU5)},
-                          {BidValue(bid.RRD1)},{BidValue(bid.RRD2)},{BidValue(bid.RRD3)},{BidValue(bid.RRD4)},{BidValue(bid.RRD5)}";
+                // RAMP RATE
+                query = $@"EXEC [sp_InsertRampRate] '{UnitNumber}','{dateSched}',{BidValue(bid.RampQuantity1)},{BidValue(bid.RampQuantity2)},{BidValue(bid.RampQuantity3)},{BidValue(bid.RampQuantity4)},{BidValue(bid.RampQuantity5)},{BidValue(bid.RRU1)},{BidValue(bid.RRU2)},{BidValue(bid.RRU3)},{BidValue(bid.RRU4)},{BidValue(bid.RRU5)},{BidValue(bid.RRD1)},{BidValue(bid.RRD2)},{BidValue(bid.RRD3)},{BidValue(bid.RRD4)},{BidValue(bid.RRD5)}";
+
                 db.Database.ExecuteSqlCommand(query);
 
                 offers = GetOffers(UnitNumber, dateSched);
             }
 
-            GlobalFunctions.Log(logType: "UPDATE_BID_OFFER",
-                            action: "Update Bid Offer Success",
-                            message: $"Bid offer successfully updated. UnitNumber: {UnitNumber}, Schedule:{dateSched} ",
-                            newValues: JsonConvert.SerializeObject(bids),
-                            userName: GetUsername());
+            GlobalFunctions.Log(
+                logType: "UPDATE_BID_OFFER",
+                action: "Update Bid Offer Success",
+                message: $"Bid offer successfully updated. UnitNumber: {UnitNumber}, Schedule:{dateSched}",
+                newValues: JsonConvert.SerializeObject(bids),
+                userName: GetUsername()
+            );
 
             return offers;
         }
+
 
         public string BidValue(Nullable<double> val)
         {
