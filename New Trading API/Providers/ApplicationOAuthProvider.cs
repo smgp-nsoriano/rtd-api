@@ -35,12 +35,28 @@ namespace New_Trading_API.Providers
 
             if (user == null)
             {
+                GlobalFunctions.Log(logType: "LOGIN",
+                           action: "Login Failed",
+                           message: "The user name or password is incorrect.",
+                           userName: context.UserName);
                 context.SetError("invalid_grant", "The user name or password is incorrect.");
                 return;
             }
 
             ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager,
                OAuthDefaults.AuthenticationType);
+
+            // ✅ ENSURE USERNAME CLAIM EXISTS
+            if (!oAuthIdentity.HasClaim(c => c.Type == ClaimTypes.Name))
+            {
+                oAuthIdentity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
+            }
+
+            GlobalFunctions.Log(logType: "LOGIN",
+                           action: "Login Success",
+                           message: "User successfully logged in.",
+                           userName: context.UserName);
+
             ClaimsIdentity cookiesIdentity = await user.GenerateUserIdentityAsync(userManager,
                 CookieAuthenticationDefaults.AuthenticationType);
 
